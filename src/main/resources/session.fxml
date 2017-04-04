@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Open Source Software published under the Apache Licence, Version 2.0.
+  -->
+
+<?import com.hai.gui.Puzzle?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hai.gui.SessionController">
+    <center>
+        <AnchorPane>
+                <children>
+                    <SplitPane fx:id="splitWordList" dividerPositions="0.65" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <items>
+                            <AnchorPane>
+                                <children>
+                                    <BorderPane fx:id="mainWordPane" styleClass="mainWordPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <center>
+                                            <Puzzle>
+                                            </Puzzle>
+                                        </center>
+                                        <bottom>
+                                        </bottom>
+                                        <top>
+                                        </top>
+                                    </BorderPane>
+                                </children>
+                            </AnchorPane>
+                            <AnchorPane>
+                                <children>
+                                    <ListView fx:id="wordListView" styleClass="wordList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                </children>
+                            </AnchorPane>
+                        </items>
+                    </SplitPane>
+                </children>
+            </AnchorPane>
+    </center>
+</BorderPane>
