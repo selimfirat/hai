@@ -1,8 +1,8 @@
-package com.hai.gui;
+package com.hai.gui.presentation.session;
 
-import com.hai.gui.model.ClueDataModel;
-import com.hai.gui.model.ClueTypeDataModel;
-import com.hai.gui.model.PuzzleDataModel;
+import com.hai.gui.data.puzzle.Clue;
+import com.hai.gui.data.puzzle.CluesContainer;
+import com.hai.gui.data.puzzle.Puzzle;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -13,7 +13,7 @@ import javafx.scene.layout.GridPane;
 public class SessionController {
 
     @FXML
-    private Puzzle puzzle;
+    private com.hai.gui.presentation.session.GUIPuzzle GUIPuzzle;
 
     @FXML
     private GridPane acrossGrid;
@@ -22,23 +22,26 @@ public class SessionController {
     private GridPane downGrid;
 
 
-    public void fillPuzzle(PuzzleDataModel puzzleDataModel) {
-        puzzle.fillPuzzleAll(puzzleDataModel);
+    public void fillPuzzle(Puzzle puzzle) {
+        GUIPuzzle.fillPuzzleAll(puzzle);
 
-        ClueTypeDataModel clues = puzzleDataModel.getClues();
+        CluesContainer clues = puzzle.getClues();
 
-        int i = 1, j = 1;
-        for (ClueDataModel clue : clues.getA()) {
+        int i = 2, j = 2;
+        for (Clue clue : clues.getA()) {
 
             Label clueNum = new Label(String.valueOf(clue.getClueNum()));
+            clueNum.setStyle("-fx-font-weight: bold; -fx-padding: 0.5em 0 0 1em;");
+
             Label clueValue = new Label(clue.getValue());
 
             acrossGrid.addRow(i++, clueNum, clueValue);
         }
 
-        for (ClueDataModel clue : clues.getD()) {
+        for (Clue clue : clues.getD()) {
 
             Label clueNum = new Label(String.valueOf(clue.getClueNum()));
+            clueNum.setStyle("-fx-font-weight: bold; -fx-padding: 0.5em 0 0 1em");
             Label clueValue = new Label(clue.getValue());
 
             downGrid.addRow(j++, clueNum, clueValue);

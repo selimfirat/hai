@@ -1,6 +1,6 @@
-package com.hai.gui;
+package com.hai.gui.presentation.session;
 
-import com.hai.gui.model.PuzzleDataModel;
+import com.hai.gui.data.puzzle.Puzzle;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,15 +12,15 @@ import javafx.scene.text.FontWeight;
 /**
  * Created by mrsfy on 27-Mar-17.
  */
-public class Puzzle extends StackPane {
+public class GUIPuzzle extends StackPane {
 
     private GraphicsContext gc;
     private GraphicsContext bgc;
-    private double size = 558;
+    private double size = 565;
     private double singleSize;
 
 
-    public Puzzle() {
+    public GUIPuzzle() {
 
         singleSize = size / 5;
 
@@ -46,7 +46,7 @@ public class Puzzle extends StackPane {
 
     }
 
-    public void fillPuzzleAll(PuzzleDataModel p) {
+    public void fillPuzzleAll(Puzzle p) {
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {

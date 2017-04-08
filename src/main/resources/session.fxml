@@ -4,7 +4,7 @@
   ~ Open Source Software published under the Apache Licence, Version 2.0.
   -->
 
-<?import com.hai.gui.Puzzle?>
+<?import com.hai.gui.presentation.session.GUIPuzzle?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.ColumnConstraints?>
-<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hai.gui.SessionController">
+<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hai.gui.presentation.session.SessionController">
     <center>
         <AnchorPane>
                 <children>
@@ -25,8 +25,8 @@
                                 <children>
                                     <BorderPane fx:id="mainWordPane" styleClass="mainWordPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                         <center>
-                                            <Puzzle fx:id="puzzle">
-                                            </Puzzle>
+                                            <GUIPuzzle fx:id="GUIPuzzle">
+                                            </GUIPuzzle>
                                         </center>
                                         <bottom>
                                         </bottom>
@@ -46,10 +46,10 @@
                                                 </columnConstraints>
                                                 <rowConstraints>
                                                     <RowConstraints />
-                                                    <RowConstraints />
+                                                    <RowConstraints prefHeight="5"/>
                                                 </rowConstraints>
                                                 <children >
-                                                    <Label GridPane.rowIndex="0">ACROSS</Label>
+                                                    <Label style="-fx-font-weight: bolder; -fx-text-fill: #a43030; -fx-padding: 0.5em 0 0 2em;" GridPane.rowIndex="0">ACROSS</Label>
                                                 </children>
                                             </GridPane>
                                             <GridPane fx:id="downGrid">
@@ -62,7 +62,7 @@
                                                     <RowConstraints />
                                                 </rowConstraints>
                                                 <children>
-                                                    <Label GridPane.rowIndex="0">DOWN</Label>
+                                                    <Label style="-fx-font-weight: bolder; -fx-text-fill: #a43030; -fx-padding: 0 0 0 2em;" GridPane.rowIndex="0">DOWN</Label>
                                                 </children>
                                             </GridPane>
                                         </children>

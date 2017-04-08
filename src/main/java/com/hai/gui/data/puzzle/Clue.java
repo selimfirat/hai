@@ -1,16 +1,16 @@
-package com.hai.gui.model;
+package com.hai.gui.data.puzzle;
 
 /**
  * Created by mrsfy on 05-Apr-17.
  */
-public class ClueDataModel {
+public class Clue {
 
     private int clueNum;
     private int clueStart;
     private String value;
     private int clueEnd;
 
-    public ClueDataModel() {
+    public Clue() {
     }
 
     public int getClueNum() {
@@ -47,7 +47,7 @@ public class ClueDataModel {
 
     @Override
     public String toString() {
-        return "ClueDataModel{" +
+        return "Clue{" +
                 "clueNum=" + clueNum +
                 ", clueStart=" + clueStart +
                 ", value='" + value + '\'' +

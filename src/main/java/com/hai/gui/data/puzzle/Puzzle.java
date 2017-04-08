@@ -1,24 +1,24 @@
-package com.hai.gui.model;
+package com.hai.gui.data.puzzle;
 
 import java.util.Arrays;
 
 /**
  * Created by mrsfy on 05-Apr-17.
  */
-public class PuzzleDataModel {
+public class Puzzle {
 
-    private ClueTypeDataModel clues;
+    private CluesContainer clues;
     private int[] layout;
     private String[] answers;
 
-    public PuzzleDataModel() {
+    public Puzzle() {
     }
 
-    public ClueTypeDataModel getClues() {
+    public CluesContainer getClues() {
         return clues;
     }
 
-    public void setClues(ClueTypeDataModel clues) {
+    public void setClues(CluesContainer clues) {
         this.clues = clues;
     }
 
@@ -40,7 +40,7 @@ public class PuzzleDataModel {
 
     @Override
     public String toString() {
-        return "PuzzleDataModel{" +
+        return "Puzzle{" +
                 "clues=" + clues +
                 ", layout=" + Arrays.toString(layout) +
                 ", answers=" + Arrays.toString(answers) +
