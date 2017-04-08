@@ -1,6 +1,7 @@
 package com.hai.gui;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.DatePicker;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -11,7 +12,11 @@ public class MainController {
     @FXML
     BorderPane mainBorderPane;
 
-    public BorderPane getMainBorderPane() {
-        return mainBorderPane;
+    @FXML
+    DatePicker datePicker;
+
+    public void startSession(BorderPane session) {
+        mainBorderPane.setCenter(session);
     }
+
 }

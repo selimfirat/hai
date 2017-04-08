@@ -1,17 +1,13 @@
 package com.hai.gui;
 
+import com.hai.gui.model.PuzzleDataModel;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-
-import java.util.List;
 
 /**
  * Created by mrsfy on 27-Mar-17.
@@ -35,66 +31,48 @@ public class Puzzle extends StackPane {
         gc = canvas.getGraphicsContext2D();
         bgc = backCanvas.getGraphicsContext2D();
 
+        clearFields();
         drawGrid();
         this.setBackground(new Background(new BackgroundFill(Color.ANTIQUEWHITE, CornerRadii.EMPTY, new Insets(0, 0, 0, 0))));
         this.setPrefWidth(400);
         this.setPrefHeight(400);
         this.getChildren().addAll(canvas, backCanvas);
 
-        Field[] fields = new Field[]{
-                new Field(2, 4, "In support of", new Word("FOR"), 0, FieldType.ACROSS, 1),
-                new Field(1, 4, "Either component of today's date", new Word("FOUR"), 1, FieldType.ACROSS, 4),
-                new Field(0, 4, "Shouts after errant golf shots", new Word("FORES"), 2, FieldType.DOWN, 1),
-                new Field(1, 4, "Author Jonathan Safran ___", new Word("FOER"), 1, FieldType.DOWN, 4),
-                new Field(0, 4, "Ins and ___", new Word("OUTS"), 3, FieldType.DOWN, 2)
-        };
-
-        for (Field field : fields)
-            fillField(field);
-
-        // clearFields();
     }
 
-    private void clearFields() {
+    public void clearFields() {
 
         gc.clearRect(0, 0, size, size);
 
     }
 
+    public void fillPuzzleAll(PuzzleDataModel p) {
 
-    private void fillField(Field field) {
-        drawFreeCells(field);
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                boolean free = p.getLayout()[j*5+i] == 0;
 
-        if (field.getFieldType() == FieldType.DOWN)
-            drawCellNum(field.getClueNum(), field.getFieldIndex(), field.getStartIndex());
-        else
-            drawCellNum(field.getClueNum(), field.getStartIndex(), field.getFieldIndex());
+                if (free) {
+                    drawFreeCell(i, j);
+                } else {
+                    drawCellLetter(p.getAnswers()[j*5+i].charAt(0), i, j);
+                }
 
-        String word = field.getWord().getWord();
+                // ACROSS
+                if (p.getClues().getA().size() > i) {
+                    int a = p.getClues().getA().get(i).getClueStart();
+                        drawCellNum(p.getClues().getA().get(i).getClueNum(), a % 5, a / 5);
+                }
 
-        for (int i = 0; i < word.length(); i++)
-            if (field.getFieldType() == FieldType.DOWN)
-                drawCellLetter(word.charAt(i), field.getFieldIndex(), field.getStartIndex() + i);
-            else
-                drawCellLetter(word.charAt(i), field.getStartIndex() + i, field.getFieldIndex());
+                // DOWN
+                if (p.getClues().getD().size() > j) {
+                    int b = p.getClues().getD().get(j).getClueStart();
+                     drawCellNum(p.getClues().getD().get(j).getClueNum(), b % 5, b / 5);
+                }
+
+            }
+        }
     }
-
-    private void drawFreeCells(Field field) {
-        String word = field.getWord().getWord();
-
-        for (int i = 0; i < field.getStartIndex(); i++)
-            if (field.getFieldType() == FieldType.DOWN)
-                drawFreeCell(field.getFieldIndex(), i);
-            else
-                drawFreeCell(i, field.getFieldIndex());
-
-        for (int i = word.length() + field.getStartIndex(); i < field.getEndIndex(); i++)
-            if (field.getFieldType() == FieldType.DOWN)
-                drawFreeCell(field.getFieldIndex(), i);
-            else
-                drawFreeCell(i, field.getFieldIndex());
-    }
-
 
     private void drawFreeCell(int i, int j) {
         gc.setFill(Color.DIMGRAY);

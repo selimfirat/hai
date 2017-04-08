@@ -29,6 +29,7 @@
   ~ Open Source Software published under the Apache Licence, Version 2.0.
   -->
 
+<?import javafx.scene.control.DatePicker?>
 <BorderPane prefHeight="500.0" prefWidth="1000.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hai.gui.MainController">
     <center>
         <StackPane>
@@ -41,27 +42,29 @@
                                     <menus>
                                         <Menu fx:id="menuFile" mnemonicParsing="false" text="File">
                                             <items>
-                                                <MenuItem fx:id="menuNew" accelerator="Shortcut+N" mnemonicParsing="false" text="New..." />
                                                 <SeparatorMenuItem mnemonicParsing="false" />
-                                                <MenuItem fx:id="menuExit" mnemonicParsing="false" text="Exit VocabHunter" />
+                                                <MenuItem fx:id="menuExit" mnemonicParsing="false" text="Exit" />
                                             </items>
                                         </Menu>
                                     </menus>
                                 </MenuBar>
                                 <ToolBar>
                                     <items>
-                                        <Button fx:id="buttonNew" mnemonicParsing="false" styleClass="buttonNew" text="New">
+                                        <DatePicker fx:id="datePicker">
+
+                                        </DatePicker>
+                                        <Button fx:id="buttonOpen" mnemonicParsing="false" styleClass="buttonOpen" text="Open">
                                             <tooltip>
                                                 <Tooltip text="Analyse a NY Times Puzzle and start a new session" />
                                             </tooltip>
                                             <graphic>
-                                                <FontAwesomeIconView styleClass="buttonNewIcon" />
+                                                <FontAwesomeIconView styleClass="buttonExportIcon" />
                                             </graphic>
                                         </Button>
                                         <Separator orientation="VERTICAL" />
                                         <CheckBox fx:id="buttonEnableLogs" mnemonicParsing="false" selected="true" text="Enable Logs">
                                             <tooltip>
-                                                <Tooltip text="Hide words using the filters" />
+                                                <Tooltip text="Enable logs!" />
                                             </tooltip>
                                         </CheckBox>
                                         <Separator orientation="VERTICAL" />
