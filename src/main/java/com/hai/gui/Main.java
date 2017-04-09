@@ -8,11 +8,18 @@ import com.hai.gui.presentation.session.SessionController;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.jongo.Jongo;
 
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.TemporalUnit;
 import java.util.Date;
 
 
@@ -36,7 +43,33 @@ public class Main extends Application {
         Jongo jongo = new Jongo(new MongoClient(new MongoClientURI("mongodb://huseyin:huseyin123@ds153239.mlab.com:53239/huseyin")).getDB("huseyin"));
         NYTPuzzlesRepository.getInstance().setJongo(jongo);
 
-        startSession(LocalDate.now().plusDays(-1));
+        GUITransition.getInstance().getMainController().setDateChangeListener(new ChangeListener<LocalDate>() {
+            public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
+                startSession(newValue);
+            }
+        });
+
+        GUITransition.getInstance().getMainController().setDayCellFactory(new Callback<DatePicker, DateCell>() {
+
+            public DateCell call(final DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        // Disable non scraped puzzles' days.
+                        if (item.getDayOfWeek() == DayOfWeek.SATURDAY
+                                || item.isBefore(LocalDate.of(2017, 2, 14))
+                                || item.isAfter(LocalDate.now())) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #ffc0cb;");
+                        }
+                    }
+
+                    ;
+                };
+            }
+        });
 
         GUITransition.getInstance().initPrimaryStage(primaryStage);
     }

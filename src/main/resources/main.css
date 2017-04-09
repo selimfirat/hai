@@ -27,39 +27,6 @@
 .mainWordPane:unknown {
     -fx-background-color: -colour-unknown;
 }
-.wordList .list-cell:selected {
-    -fx-text-fill: black;
-    -fx-font-weight: bold;
-    -fx-border-color: black;
-}
-.wordList .list-cell, .wordList .table-cell {
-    -fx-border-color: white;
-    -fx-border-width: 1 0 1 0;
-}
-.wordList .list-cell:unseen, .wordList .table-cell:unseen {
-    -fx-background-color: -colour-unseen;
-}
-.wordList .list-cell:known, .wordList .table-cell:known {
-    -fx-background-color: -gradient-known;
-}
-.wordList .list-cell:unknown, .wordList .table-cell:unknown {
-    -fx-background-color: -gradient-unknown;
-}
-.wordList .table-cell:excluded {
-    -fx-background-color: lightgrey;
-}
-.wordList .table-cell:excluded .text {
-    -fx-strikethrough: true;
-    -fx-fill: red;
-}
-.wordList .error {
-    -fx-text-fill: red;
-    -fx-font-size: 18;
-}
-.wordCount:fail {
-    -fx-text-fill: red;
-    -fx-font-weight: bold;
-}
 .filterSessionStateColumn {
     -fx-alignment: CENTER;
 }

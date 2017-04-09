@@ -32,10 +32,11 @@ public class GUIPuzzle extends StackPane {
         bgc = backCanvas.getGraphicsContext2D();
 
         clearFields();
+
         drawGrid();
         this.setBackground(new Background(new BackgroundFill(Color.ANTIQUEWHITE, CornerRadii.EMPTY, new Insets(0, 0, 0, 0))));
-        this.setPrefWidth(400);
-        this.setPrefHeight(400);
+        this.setPrefWidth(size);
+        this.setPrefHeight(size);
         this.getChildren().addAll(canvas, backCanvas);
 
     }
@@ -47,6 +48,8 @@ public class GUIPuzzle extends StackPane {
     }
 
     public void fillPuzzleAll(Puzzle p) {
+
+        clearFields();
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {

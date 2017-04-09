@@ -90,7 +90,7 @@
                                                         <FontAwesomeIconView styleClass="buttonNewIcon" />
                                                     </graphic>
                                                 </Label>
-                                                <Label styleClass="new" text="Choose 'New' to analyse a crossword and start a new session." GridPane.columnIndex="1" />
+                                                <Label styleClass="new" text="Choose a date to get started." GridPane.columnIndex="1" />
                                             </children>
                                         </GridPane>
                                     </children>

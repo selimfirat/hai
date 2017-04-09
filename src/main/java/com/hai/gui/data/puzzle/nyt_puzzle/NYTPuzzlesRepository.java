@@ -2,11 +2,13 @@ package com.hai.gui.data.puzzle.nyt_puzzle;
 
 import com.hai.gui.data.puzzle.Puzzle;
 import com.hai.gui.data.puzzle.PuzzleContainer;
+import javafx.util.converter.LocalDateStringConverter;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -18,7 +20,7 @@ public class NYTPuzzlesRepository {
 
     private NYTPuzzlesRepository() { }
 
-    MongoCollection puzzles;
+    private MongoCollection puzzles;
 
     public static NYTPuzzlesRepository getInstance() {
         if (_instance == null)
@@ -32,8 +34,8 @@ public class NYTPuzzlesRepository {
     }
 
     public Puzzle findPuzzle(LocalDate date) {
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-        String dateStr = format1.format(date);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String dateStr = dateTimeFormatter.format(date);
 
         return puzzles.findOne("{ print_date: # }", dateStr).as(PuzzleContainer.class).getPuzzle_data();
     }
