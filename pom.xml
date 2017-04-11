@@ -29,5 +29,15 @@
             <artifactId>mongo-java-driver</artifactId>
             <version>3.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>javazoom</groupId>
+            <artifactId>jlayer</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-polly</artifactId>
+            <version>1.11.118</version>
+        </dependency>
     </dependencies>
 </project>
