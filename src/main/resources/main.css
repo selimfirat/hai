@@ -1,11 +1,11 @@
 * {
-    -colour-unseen: #F5F9FF;
-    -colour-known: #EBFFF0;
-    -colour-known-end: #008000;
-    -gradient-known: linear-gradient(from 0% 0% to 100% 200%, repeat, -colour-known 0%, -colour-known-end 90%);
+    -colour-unseen: darkgray;
+    -colour-known: darkblue;
+    -colour-known-end: darkred;
     -colour-unknown: #FFF0ED;
     -colour-unknown-end: #a43030;
-    -gradient-unknown: linear-gradient(from 0% 0% to 100% 200%, repeat, -colour-unknown 0%, -colour-unknown-end 90%);
+    -gradient-unknown: linear-gradient(from 0% 0% to 100% 200%, repeat, -colour-known 0%, -colour-known-end 90%);
+    -gradient-known: linear-gradient(from 0% 0% to 100% 200%, repeat, -colour-unknown 0%, -colour-unknown-end 90%);
     -colour-word-use: darkblue;
     -colour-filtered: lightgrey;
     -colour-done: royalblue;
@@ -19,10 +19,10 @@
     -fx-font-size: 40;
 }
 .mainWordPane { /* This corresponds to the pseudo-class "unseen" */
-    -fx-background-color: -colour-unseen;
+    -fx-background-color: darkred;
 }
 .mainWordPane:known {
-    -fx-background-color: -colour-known;
+    -fx-background-color: darkblue;
 }
 .mainWordPane:unknown {
     -fx-background-color: -colour-unknown;

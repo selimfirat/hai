@@ -104,7 +104,9 @@ public class Main extends Application {
             }
         });
 
-        LOG.log(MrsHai.LEVEL, "It is working bitch!");
+        LOG.log(MrsHai.LEVEL, "Helloooo! I am Mrs Hai.");
+        LOG.log(MrsHai.LEVEL, "I will tell you the story of my crossword solving adventure.");
+        LOG.log(MrsHai.LEVEL, "Firstly, please pick a date of New York Times mini puzzle to be solved.");
     }
 
     private void startSession(LocalDate date) {

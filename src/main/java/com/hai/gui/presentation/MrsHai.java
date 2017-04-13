@@ -2,6 +2,8 @@ package com.hai.gui.presentation;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -26,7 +28,6 @@ import javazoom.jl.player.advanced.PlaybackListener;
 public class MrsHai {
 
     private final AmazonPollyClient polly;
-    private final Voice voice;
 
     public MrsHai() {
         // create an Amazon Polly client in a specific region
@@ -38,12 +39,12 @@ public class MrsHai {
 
         // Synchronously ask Amazon Polly to describe available TTS voices.
         DescribeVoicesResult describeVoicesResult = polly.describeVoices(describeVoicesRequest);
-        voice = describeVoicesResult.getVoices().get(0);
+
     }
 
     private InputStream synthesize(String text, OutputFormat format) throws IOException {
         SynthesizeSpeechRequest synthReq =
-                new SynthesizeSpeechRequest().withText(text).withVoiceId(voice.getId())
+                new SynthesizeSpeechRequest().withText(text).withVoiceId("Salli") // voice.getId())
                         .withOutputFormat(format);
         SynthesizeSpeechResult synthRes = polly.synthesizeSpeech(synthReq);
 
@@ -51,14 +52,25 @@ public class MrsHai {
     }
 
     public static final Level LEVEL = Level.SEVERE;
+    private Queue<String> speechQueue = new LinkedList<String>();
+
 
     public void speak(final String speech) {
-        //create the test class
-        MrsHai mrsHai = new MrsHai();
+        speechQueue.add(speech);
+        if (speechQueue.size() == 1)
+            justSpeak();
+    }
+
+    private void justSpeak() {
+        if (speechQueue.size() == 0)
+            return;
+
+        final String speech = speechQueue.peek();
+
         //get the audio stream
         InputStream speechStream = null;
         try {
-            speechStream = mrsHai.synthesize(speech, OutputFormat.Mp3);
+            speechStream = synthesize(speech, OutputFormat.Mp3);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,15 +87,16 @@ public class MrsHai {
         player.setPlayBackListener(new PlaybackListener() {
             @Override
             public void playbackStarted(PlaybackEvent evt) {
-                System.out.println("Playback started");
-                System.out.println(speech);
+                System.out.println("Saying " + speech);
             }
 
 
             @Override
             public void playbackFinished(PlaybackEvent evt) {
-                System.out.println("Playback finished");
+                speechQueue.remove();
+                justSpeak();
             }
+
         });
 
 
