@@ -3,11 +3,13 @@ package com.hai.gui;
 import com.hai.gui.data.puzzle.Puzzle;
 import com.hai.gui.data.puzzle.nyt_puzzle.NYTPuzzlesRepository;
 import com.hai.gui.presentation.GUITransition;
+import com.hai.gui.presentation.MrsHai;
 import com.hai.gui.presentation.main.MainController;
 import com.hai.gui.presentation.session.SessionController;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.DateCell;
@@ -15,12 +17,14 @@ import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.jongo.Jongo;
+import sun.rmi.runtime.Log;
 
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.TemporalUnit;
 import java.util.Date;
+import java.util.logging.*;
 
 
 /**
@@ -33,9 +37,11 @@ public class Main extends Application {
     }
 
 
-    NYTPuzzlesRepository nytPuzzlesRepository = NYTPuzzlesRepository.getInstance();
-    MainController mainController = GUITransition.getInstance().getMainController();
-    SessionController sessionController = GUITransition.getInstance().getSessionController();
+    private Logger LOG = Logger.getLogger(Main.class.getName());
+    private NYTPuzzlesRepository nytPuzzlesRepository = NYTPuzzlesRepository.getInstance();
+    private MainController mainController = GUITransition.getInstance().getMainController();
+    private SessionController sessionController = GUITransition.getInstance().getSessionController();
+    private MrsHai mrsHai = new MrsHai();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -72,6 +78,33 @@ public class Main extends Application {
         });
 
         GUITransition.getInstance().initPrimaryStage(primaryStage);
+
+        Logger.getLogger("").addHandler(new Handler() {
+            @Override
+            public void publish(LogRecord record) {
+
+                if (record.getLevel() == MrsHai.LEVEL) {
+                    final LogRecord finalRecord = record;
+                    new Thread(new Runnable() {
+                        public void run() {
+                            mrsHai.speak(finalRecord.getMessage());
+                        }
+                    }).start();
+                }
+            }
+
+            @Override
+            public void flush() {
+
+            }
+
+            @Override
+            public void close() throws SecurityException {
+
+            }
+        });
+
+        LOG.log(MrsHai.LEVEL, "It is working bitch!");
     }
 
     private void startSession(LocalDate date) {
