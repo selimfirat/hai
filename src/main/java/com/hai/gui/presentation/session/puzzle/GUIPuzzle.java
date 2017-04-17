@@ -1,4 +1,4 @@
-package com.hai.gui.presentation.session;
+package com.hai.gui.presentation.session.puzzle;
 
 import com.hai.gui.data.puzzle.Puzzle;
 import javafx.geometry.Insets;

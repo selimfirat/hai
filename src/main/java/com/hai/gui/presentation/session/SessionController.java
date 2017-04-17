@@ -1,13 +1,22 @@
 package com.hai.gui.presentation.session;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hai.gui.data.csp.Constraint;
+import com.hai.gui.data.csp.Variable;
+import com.hai.gui.data.cytoscape_graph.Edge;
+import com.hai.gui.data.cytoscape_graph.Element;
+import com.hai.gui.data.cytoscape_graph.GraphData;
+import com.hai.gui.data.cytoscape_graph.Node;
 import com.hai.gui.data.puzzle.Clue;
 import com.hai.gui.data.puzzle.CluesContainer;
 import com.hai.gui.data.puzzle.Puzzle;
-import javafx.collections.ObservableList;
+import com.hai.gui.presentation.session.csp.CSPGraph;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+
+import java.util.List;
 
 /**
  * Created by mrsfy on 03-Apr-17.
@@ -15,13 +24,16 @@ import javafx.scene.layout.GridPane;
 public class SessionController {
 
     @FXML
-    private com.hai.gui.presentation.session.GUIPuzzle GUIPuzzle;
+    private com.hai.gui.presentation.session.puzzle.GUIPuzzle GUIPuzzle;
 
     @FXML
     private GridPane acrossGrid;
 
     @FXML
     private GridPane downGrid;
+
+    @FXML
+    private CSPGraph cspGraph;
 
 
     public void fillPuzzle(Puzzle puzzle) {
@@ -56,5 +68,34 @@ public class SessionController {
     }
 
 
+    public void initCSPGraph(List<Variable> variables, List<Constraint> constraints) {
+        GraphData graphData = new GraphData();
 
+        for (Variable var : variables) {
+            Node node = new Node();
+            node.setId(var.getId());
+            graphData.getNodes().add(new Element(node));
+        }
+
+        for (Constraint constraint : constraints) {
+            Edge edge = new Edge();
+            edge.setSource("D" + constraint.getDownNum());
+            edge.setTarget("A" + constraint.getAcrossNum());
+            edge.setId(edge.getSource() + "[" + constraint.getDownCharAt() + "]:" + edge.getTarget() + "[" + constraint.getAcroosCharAt() + "]");
+            graphData.getEdges().add(new Element(edge));
+        }
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String elesJson = "null";
+        try {
+            elesJson = objectMapper.writeValueAsString(graphData);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        System.out.println(elesJson);
+
+        cspGraph.invokeJS("initGraph(" + elesJson + ")");
+    }
 }

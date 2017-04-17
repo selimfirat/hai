@@ -2,6 +2,7 @@ package com.hai.gui;
 
 import com.hai.gui.data.puzzle.Puzzle;
 import com.hai.gui.data.puzzle.nyt_puzzle.NYTPuzzlesRepository;
+import com.hai.gui.domain.CSPFactory;
 import com.hai.gui.presentation.GUITransition;
 import com.hai.gui.presentation.MrsHai;
 import com.hai.gui.presentation.main.MainController;
@@ -9,7 +10,6 @@ import com.hai.gui.presentation.session.SessionController;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.DateCell;
@@ -17,13 +17,9 @@ import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.jongo.Jongo;
-import sun.rmi.runtime.Log;
 
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.temporal.TemporalUnit;
-import java.util.Date;
 import java.util.logging.*;
 
 
@@ -46,6 +42,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        //HTTPServer.getInstance().start();
         Jongo jongo = new Jongo(new MongoClient(new MongoClientURI("mongodb://huseyin:huseyin123@ds153239.mlab.com:53239/huseyin")).getDB("huseyin"));
         NYTPuzzlesRepository.getInstance().setJongo(jongo);
 
@@ -79,6 +76,7 @@ public class Main extends Application {
 
         GUITransition.getInstance().initPrimaryStage(primaryStage);
 
+
         Logger.getLogger("").addHandler(new Handler() {
             @Override
             public void publish(LogRecord record) {
@@ -104,9 +102,9 @@ public class Main extends Application {
             }
         });
 
-        LOG.log(MrsHai.LEVEL, "Helloooo! I am Mrs Hai.");
-        LOG.log(MrsHai.LEVEL, "I will tell you the story of my crossword solving adventure.");
-        LOG.log(MrsHai.LEVEL, "Firstly, please pick a date of New York Times mini puzzle to be solved.");
+        LOG.log(MrsHai.LEVEL, "Hello! I am Mrs Hai.");
+        LOG.log(MrsHai.LEVEL, "I will tell you the story of my crossword solving adventure while I am solving it.");
+        LOG.log(MrsHai.LEVEL, "Please pick a date of New York Times mini puzzle to be solved.");
     }
 
     private void startSession(LocalDate date) {
@@ -115,6 +113,12 @@ public class Main extends Application {
         System.out.println(puzzle);
 
         sessionController.fillPuzzle(puzzle);
+
+        CSPFactory cspFactory = new CSPFactory(puzzle);
+
+        sessionController.initCSPGraph(cspFactory.generateVariables(), cspFactory.generateConstraints());
+
+
         mainController.startSession();
     }
 
