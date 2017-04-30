@@ -4,7 +4,6 @@ import com.hai.gui.data.csp.Assignment;
 import com.hai.gui.data.csp.Constraint;
 import com.hai.gui.data.csp.Domain;
 import com.hai.gui.data.csp.Variable;
-import com.hai.rest.Candidate;
 
 import java.util.*;
 import java.util.function.Function;

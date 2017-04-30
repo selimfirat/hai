@@ -1,6 +1,7 @@
 package com.hai.gui.data.csp;
 
-import com.hai.rest.Candidate;
+
+import com.hai.gui.domain.merger.rest_client.Candidate;
 
 import java.util.HashMap;
 import java.util.List;

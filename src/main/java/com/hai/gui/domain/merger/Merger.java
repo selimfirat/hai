@@ -3,15 +3,14 @@ package com.hai.gui.domain.merger;
 import com.hai.gui.data.csp.Domain;
 import com.hai.gui.data.puzzle.Clue;
 import com.hai.gui.data.puzzle.Puzzle;
+import com.hai.gui.domain.merger.rest_client.Candidate;
+import com.hai.gui.domain.merger.rest_client.RestClient;
+import com.hai.gui.domain.merger.rest_client.RestModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.hai.rest.Candidate;
-import com.hai.rest.RestClient;
-import com.hai.rest.RestModule;
 
 /**
  * Created by mrsfy on 30-Apr-17.
