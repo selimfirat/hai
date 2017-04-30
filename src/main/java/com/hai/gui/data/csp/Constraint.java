@@ -48,4 +48,5 @@ public class Constraint {
     public void setDownCharAt(int downCharAt) {
         this.downCharAt = downCharAt;
     }
+
 }

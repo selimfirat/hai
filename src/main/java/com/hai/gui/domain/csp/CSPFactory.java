@@ -1,4 +1,4 @@
-package com.hai.gui.domain;
+package com.hai.gui.domain.csp;
 
 import com.hai.gui.data.csp.Constraint;
 import com.hai.gui.data.csp.Variable;

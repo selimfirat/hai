@@ -2,7 +2,7 @@ package com.hai.gui;
 
 import com.hai.gui.data.puzzle.Puzzle;
 import com.hai.gui.data.puzzle.nyt_puzzle.NYTPuzzlesRepository;
-import com.hai.gui.domain.CSPFactory;
+import com.hai.gui.domain.csp.CSPFactory;
 import com.hai.gui.presentation.GUITransition;
 import com.hai.gui.presentation.MrsHai;
 import com.hai.gui.presentation.main.MainController;
