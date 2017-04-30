@@ -1,14 +1,21 @@
 package com.hai.gui;
 
+import com.hai.gui.data.csp.Assignment;
+import com.hai.gui.data.csp.Constraint;
+import com.hai.gui.data.csp.Domain;
+import com.hai.gui.data.csp.Variable;
 import com.hai.gui.data.puzzle.Puzzle;
 import com.hai.gui.data.puzzle.nyt_puzzle.NYTPuzzlesRepository;
 import com.hai.gui.domain.csp.CSPFactory;
+import com.hai.gui.domain.csp.CSPSolver;
+import com.hai.gui.domain.merger.Merger;
 import com.hai.gui.presentation.GUITransition;
 import com.hai.gui.presentation.MrsHai;
 import com.hai.gui.presentation.main.MainController;
 import com.hai.gui.presentation.session.SessionController;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.sun.scenario.effect.Merge;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -20,6 +27,8 @@ import org.jongo.Jongo;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.*;
 
 
@@ -115,11 +124,21 @@ public class Main extends Application {
         sessionController.fillPuzzle(puzzle);
 
         CSPFactory cspFactory = new CSPFactory(puzzle);
+        List<Variable> variableList = cspFactory.generateVariables();
+        List<Constraint> constraintList = cspFactory.generateConstraints();
 
-        sessionController.initCSPGraph(cspFactory.generateVariables(), cspFactory.generateConstraints());
-
+        sessionController.initCSPGraph(variableList, constraintList);
 
         mainController.startSession();
+
+        Merger merger = new Merger(puzzle);
+        Map<String, Domain> domains = merger.getDomains();
+
+        CSPSolver cspSolver = new CSPSolver();
+
+        Assignment assignment = cspSolver.backtracingSearch(variableList, constraintList, domains);
+        System.out.println(assignment);
+
     }
 
 }
