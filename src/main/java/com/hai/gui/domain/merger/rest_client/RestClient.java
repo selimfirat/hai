@@ -53,7 +53,7 @@ public class RestClient
                 candidates = getCandidates(getNLength(length));
             break;
             case BING_SEARCH:
-                candidates = getCandidates(analyzeSearchResults(clue, 20));
+                candidates = getCandidates(analyzeSearchResults(clue, 20, length));
             break;
             case DATAMUSE_ANSWER_LIST:
                 candidates = getCandidates(dataMuseAnswerList(clue, length));
@@ -77,9 +77,9 @@ public class RestClient
     }
 
     // document_analyzer methods
-    public String analyzeSearchResults(String query, int count)
+    public String analyzeSearchResults(String query, int count, int length)
     {
-        String JsonString = "{\"query\":\"" + query + "\", \"count\": " + count + "}";
+        String JsonString = "{\"query\":\"" + query + "\", \"count\": " + count + ", \"length\": " + length + "}";
         HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.ANALYZE_SEARCH_RESULT_STRING);
 
         return makePostRequest(postMethod, JsonString);
