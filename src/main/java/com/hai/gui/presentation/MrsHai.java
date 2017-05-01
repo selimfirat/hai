@@ -38,7 +38,7 @@ public class MrsHai {
         DescribeVoicesRequest describeVoicesRequest = new DescribeVoicesRequest();
 
         // Synchronously ask Amazon Polly to describe available TTS voices.
-        DescribeVoicesResult describeVoicesResult = polly.describeVoices(describeVoicesRequest);
+ //       DescribeVoicesResult describeVoicesResult = polly.describeVoices(describeVoicesRequest);
 
     }
 

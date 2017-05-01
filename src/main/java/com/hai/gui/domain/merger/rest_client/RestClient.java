@@ -53,7 +53,7 @@ public class RestClient
                 candidates = getCandidates(getNLength(length));
             break;
             case BING_SEARCH:
-                candidates = getCandidates(analyzeSearchResults(clue, 20, length));
+                candidates = getCandidates(analyzeSearchResults(clue, 10, length));
             break;
             case DATAMUSE_ANSWER_LIST:
                 candidates = getCandidates(dataMuseAnswerList(clue, length));

@@ -54,4 +54,10 @@ public class Clue {
                 ", clueEnd=" + clueEnd +
                 '}';
     }
+
+    public int getAnswerLength(boolean isAcross)
+    {
+        if (isAcross) return clueEnd - clueStart + 1;
+        else return (clueEnd - clueStart) / 5 + 1;
+    }
 }
