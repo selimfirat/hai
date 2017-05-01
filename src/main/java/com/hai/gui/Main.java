@@ -41,7 +41,6 @@ public class Main extends Application {
         launch(args);
     }
 
-
     private Logger LOG = Logger.getLogger(Main.class.getName());
     private NYTPuzzlesRepository nytPuzzlesRepository = NYTPuzzlesRepository.getInstance();
     private MainController mainController = GUITransition.getInstance().getMainController();

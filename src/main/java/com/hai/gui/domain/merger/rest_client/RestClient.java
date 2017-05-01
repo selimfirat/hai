@@ -34,7 +34,15 @@ public class RestClient
     private List<Candidate> getCandidates(String json) {
         Type type = new TypeToken<ArrayList<Candidate>>(){}.getType();
 
-        return gson.fromJson(json, type);
+        List<Candidate> res;
+        try {
+            res = gson.fromJson(json, type);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            res = new ArrayList<>();
+        }
+
+        return res;
     }
 
     public List<Candidate> useModule(RestModule module, String clue, int length) {
@@ -54,7 +62,7 @@ public class RestClient
                 candidates = getCandidates(searchDatamuseWordenp(clue));
             break;
             case WIKI_TITLES_SEARCH:
-                candidates = getCandidates(wikiSearch(clue));
+                candidates = getCandidates(wikiSearch(clue, length));
             break;
         }
 
@@ -80,7 +88,7 @@ public class RestClient
     // datamuse methods
     public String dataMuseAnswerList(String ml, int wordLength)
     {
-        String JsonString = "{\"ml\":\"" + ml + "\", \"word_length\": " + wordLength + "}";
+        String JsonString = "{\"ml\":\"" + sanitizeClue(ml) + "\", \"word_length\": " + wordLength + "}";
         HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.SEARCH_DATAMUSE_ANSWER_LIST_STRING);
 
         return makePostRequest(postMethod, JsonString);
@@ -88,15 +96,15 @@ public class RestClient
 
     public String searchDatamuseWordenp(String ml)
     {
-        String JsonString = "{\"ml\":\"" + ml + "\"}";
+        String JsonString = "{\"ml\":\"" + sanitizeClue(ml) + "\"}";
         HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.SEARCH_DATAMUSE_WORDENP_STRING);
 
         return makePostRequest(postMethod, JsonString);
     }
 
-    public String wikiSearch(String ml)
+    public String wikiSearch(String ml, int wordLength)
     {
-        String JsonString = "{\"ml\":\"" + ml + "\"}";
+        String JsonString = "{\"ml\":\"" + sanitizeClue(ml) + "\", \"word_length\": " + wordLength + "}";
         HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.WIKI_SEARCH_STRING);
 
         return makePostRequest(postMethod, JsonString);
@@ -151,5 +159,12 @@ public class RestClient
         }
 
         return result.toString();
+    }
+
+    private String sanitizeClue(String clue)
+    {
+        String result = clue.replace('"', '+');
+        result = result.replace(' ', '+');
+        return result;
     }
 }

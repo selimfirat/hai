@@ -39,7 +39,7 @@ public class Merger {
 
     private void useModules(Clue clue, Map<String, Domain> domains, boolean isAcross) {
         for (RestModule module : RestModule.values()) {
-            List<Candidate> candidates = restClient.useModule(module, clue.getValue(), Math.abs(clue.getClueEnd() - clue.getClueStart()));
+            List<Candidate> candidates = restClient.useModule(module, clue.getValue(), (int) Math.ceil(Math.abs(clue.getClueEnd() - clue.getClueStart()) / 5 + 1));
             domains.put((isAcross ? "A" : "D") + clue.getClueNum(), new Domain(candidates));
         }
     }
