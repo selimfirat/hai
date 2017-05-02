@@ -110,6 +110,24 @@ public class RestClient
         return makePostRequest(postMethod, JsonString);
     }
 
+    // syn_ant methods
+    public String findAllSynonyms(String str, int wordLength)
+    {
+        String JsonString = "{\"str\":\"" + str + "\", \"word_length\": " + wordLength + "}";
+        HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.FIND_ALL_SYNONYMS_STRING);
+
+        return makePostRequest(postMethod, JsonString);
+    }
+
+    public String findAllAntonyms(String str, int wordLength)
+    {
+        String JsonString = "{\"str\":\"" + str + "\", \"word_length\": " + wordLength + "}";
+        HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.FIND_ALL_ANTONYMS_STRING);
+
+        return makePostRequest(postMethod, JsonString);
+    }
+
+
     // Requests
     private String makePostRequest(HttpPost postMethod, String JsonString)
     {

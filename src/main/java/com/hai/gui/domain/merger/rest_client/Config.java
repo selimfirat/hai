@@ -17,4 +17,7 @@ public class Config
     public static final String SEARCH_DATAMUSE_ANSWER_LIST_STRING = "/datamuse/datamuse_answer_list";
     public static final String SEARCH_DATAMUSE_WORDENP_STRING = "/datamuse/search_datamuse_wordenp";
     public static final String WIKI_SEARCH_STRING = "/datamuse/wiki_search";
+
+    public static final String FIND_ALL_SYNONYMS_STRING = "/syn_ant/find_all_synonyms";
+    public static final String FIND_ALL_ANTONYMS_STRING = "/syn_ant/find_all_antonyms";
 }

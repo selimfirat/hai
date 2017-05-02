@@ -17,5 +17,7 @@ public class TestClass
         //System.out.println(rc.dataMuseAnswerList("what is round, purple and commutes to work", 10));
         //System.out.println(rc.searchDatamuseWordenp("what is round, purple and commutes to work"));
         //System.out.println(rc.wikiSearch("what is round, purple and commutes to work", 5));
+        System.out.println(rc.findAllSynonyms("selim", 5));
+        System.out.println(rc.findAllAntonyms("selim", 5));
     }
 }
