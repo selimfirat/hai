@@ -31,6 +31,7 @@ public class Merger {
         for (Clue clue : puzzle.getClues().getA())
             useModules(clue, domains, true);
 
+        // comment
         for (Clue clue : puzzle.getClues().getD())
             useModules(clue, domains, false);
 
