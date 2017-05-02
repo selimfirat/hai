@@ -7,7 +7,6 @@ import com.hai.gui.domain.merger.rest_client.Candidate;
 import com.hai.gui.domain.merger.rest_client.RestClient;
 import com.hai.gui.domain.merger.rest_client.RestModule;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +18,12 @@ public class Merger {
 
     private Puzzle puzzle;
     private RestClient restClient;
-
     public Merger(Puzzle puzzle) {
         this.puzzle = puzzle;
         restClient = new RestClient();
+    }
+    public Puzzle getPuzzle(){
+        return puzzle;
     }
 
     public Map<String, Domain> getDomains() {
