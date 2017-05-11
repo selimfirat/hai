@@ -4,6 +4,7 @@ import com.hai.gui.data.DB;
 import com.hai.gui.data.candidate.CandidatesRepository;
 import com.hai.gui.data.csp.Domain;
 import com.hai.gui.data.logs.SuccessLogRepository;
+import com.hai.gui.data.logs.TimerLogRepository;
 import com.hai.gui.data.puzzle.Clue;
 import com.hai.gui.data.puzzle.Puzzle;
 import com.hai.gui.data.candidate.Candidate;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Consumer;
 
 
 /**
@@ -26,14 +28,12 @@ import java.util.*;
 public class Merger {
 
     private Puzzle puzzle;
-    private LocalDate date;
     private RestClient restClient;
     private MergerModuleTest mergerModuleTest;
     private String today;
 
     public Merger(Puzzle puzzle, LocalDate date) {
         this.puzzle = puzzle;
-        this.date = date;
         restClient = new RestClient();
         mergerModuleTest = new MergerModuleTest(puzzle);
         this.today = date.format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -46,13 +46,15 @@ public class Merger {
     public Map<String, Domain> getDomains() {
         Map<String, Domain> domains = new HashMap<>();
 
-        for (Clue clue : puzzle.getClues().getA())
-                useModules(clue, domains, true);
+        for (Clue clue : puzzle.getClues().getA()) {
+            Map<String, Double> candidates = useModules(clue, true);
+            domains.put("A" + clue.getClueNum(), new Domain(candidates));
+        }
 
-        // comment
-        for (Clue clue : puzzle.getClues().getD())
-            useModules(clue, domains, false);
-
+        for (Clue clue : puzzle.getClues().getD()){
+            Map<String, Double> candidates = useModules(clue, false);
+            domains.put("D" + clue.getClueNum(), new Domain(candidates));
+        }
 
         mergerModuleTest.normalizeScores();
         SuccessLogRepository.getInstance().saveRecords(mergerModuleTest.getScores(), today);
@@ -60,19 +62,33 @@ public class Merger {
         return domains;
     }
 
-    private void useModules(Clue clue, Map<String, Domain> domains, boolean isAcross) {
+    private Map<String, Double> useModules(Clue clue, boolean isAcross) {
+        String clueId = (isAcross ? "A" : "D") + clue.getClueNum();
+        Map<String, Double> res = new HashMap<>();
+
         for (RestModule module : RestModule.values()) {
-            System.out.println(clue.getValue());
-            System.out.println(clue.getClueStart() + ", " + clue.getClueEnd());
+            long startTime = System.currentTimeMillis();
+
             List<Candidate> candidates = restClient.useModule(module, clue.getValue(), clue.getAnswerLength(isAcross));
 
             CandidatesRepository.getInstance().saveCandidates((isAcross ? "A" : "D") + clue.getClueNum(), today, module.name(), candidates);
-            domains.put((isAcross ? "A" : "D") + clue.getClueNum(), new Domain(candidates));
+
+            candidates.forEach(candidate -> {
+                if (!res.containsKey(candidate.getWord()))
+                    res.put(candidate.getWord(), candidate.getScore());
+                else
+                    res.put(candidate.getWord(), res.get(clueId) + candidate.getScore());
+            });
+            long stopTime = System.currentTimeMillis();
+            long elapsedTime = stopTime - startTime;
+            TimerLogRepository.getInstance().addRecord(clueId, module.name(), elapsedTime, today);
+
             mergerModuleTest.calculateScore(module.name(), (isAcross ? "A" : "D") + clue.getClueNum(), candidates);
         }
 
 
         for (Module module : Module.values()) {
+            long startTime = System.currentTimeMillis();
 
             List<Candidate> candidates = new ArrayList<>();
 
@@ -87,9 +103,20 @@ public class Merger {
             }
 
             CandidatesRepository.getInstance().saveCandidates((isAcross ? "A" : "D") + clue.getClueNum(), today, module.name(), candidates);
-            domains.put((isAcross ? "A" : "D") + clue.getClueNum(), new Domain(candidates));
+
+            candidates.forEach(candidate -> {
+                if (!res.containsKey(candidate.getWord()))
+                    res.put(candidate.getWord(), candidate.getScore());
+                else
+                    res.put(candidate.getWord(), res.get(clueId) + candidate.getScore());
+            });
+            long stopTime = System.currentTimeMillis();
+            long elapsedTime = stopTime - startTime;
+            TimerLogRepository.getInstance().addRecord(clueId, module.name(), elapsedTime, today);
+
             mergerModuleTest.calculateScore(module.name(), (isAcross ? "A" : "D") + clue.getClueNum(), candidates);
         }
 
+        return res;
     }
 }

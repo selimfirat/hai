@@ -28,7 +28,6 @@ public class NLengthCWDB {
         catch (SQLException e)
         {
             e.printStackTrace();
-            System.exit(1);
         }
         return set;
 

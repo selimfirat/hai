@@ -2,10 +2,11 @@ package com.hai.gui.data.csp;
 
 
 import com.hai.gui.data.candidate.Candidate;
+import javafx.collections.transformation.SortedList;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Created by mrsfy on 30-Apr-17.
@@ -13,20 +14,13 @@ import java.util.Map;
 public class Domain {
 
     // word -> score
-    private Map<String, Double> candidates = new HashMap<>();
+    private TreeSet<Candidate> candidates = new TreeSet<>((o1, o2) -> (int) Math.ceil(o1.getScore() - o2.getScore()));
 
-    public Domain() {
+    public Domain(Map<String, Double> candidates) {
+        candidates.forEach((word, score) -> {
+            this.candidates.add(new Candidate(word, score));
+        });
     }
 
-    public Domain(List<Candidate> candidates) {
 
-    }
-
-    public Map<String, Double> getCandidates() {
-        return candidates;
-    }
-
-    public void setCandidates(Map<String, Double> candidates) {
-        this.candidates = candidates;
-    }
 }
