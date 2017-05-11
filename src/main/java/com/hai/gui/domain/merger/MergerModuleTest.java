@@ -16,6 +16,7 @@ import com.hai.gui.domain.merger.rest_client.RestModule;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 
 public class MergerModuleTest {
@@ -27,6 +28,35 @@ public class MergerModuleTest {
     public MergerModuleTest(Puzzle puzzle) {
         this.puzzle = puzzle;
         scores = new HashMap<>();
+
+        String[] answersLayout = puzzle.getAnswers();
+
+        puzzle.getClues().getA().forEach(clue -> {
+
+            int start = clue.getClueStart();
+            int end = clue.getClueEnd();
+
+            StringBuilder answer = new StringBuilder();
+
+            for (int i = start; i < end; i++)
+                    answer.append(answersLayout[i]);
+
+            answers.put("A" + clue.getClueNum(), answer.toString());
+        });
+
+        puzzle.getClues().getD().forEach(clue -> {
+
+            int start = clue.getClueStart();
+            int end = clue.getClueEnd();
+
+            StringBuilder answer = new StringBuilder();
+
+            for (int i = start; i <= end; i+= 5)
+                    answer.append(answersLayout[i]);
+
+            answers.put("D" + clue.getClueNum(), answer.toString());
+        });
+
     }
 
     public Puzzle getPuzzle(){
