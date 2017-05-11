@@ -9,7 +9,7 @@ package com.hai.gui.domain.merger;
 import com.hai.gui.data.csp.Domain;
 import com.hai.gui.data.puzzle.Clue;
 import com.hai.gui.data.puzzle.Puzzle;
-import com.hai.gui.domain.merger.rest_client.Candidate;
+import com.hai.gui.data.candidate.Candidate;
 import com.hai.gui.domain.merger.rest_client.RestClient;
 import com.hai.gui.domain.merger.rest_client.RestModule;
 
@@ -21,57 +21,38 @@ import java.util.Map;
 public class MergerModuleTest {
 
     private Puzzle puzzle;
-    private RestClient restClient;
-    private Map<String,Double> scoreList;
+    private Map<String,Double> scores;
+    private Map<String, String> answers;
 
     public MergerModuleTest(Puzzle puzzle) {
         this.puzzle = puzzle;
-        restClient = new RestClient();
-        scoreList = new HashMap<>();
+        scores = new HashMap<>();
     }
+
     public Puzzle getPuzzle(){
         return puzzle;
     }
-    private double calculateScore(List<Candidate> candidates){
+
+    public void calculateScore(String module, String clueId, List<Candidate> candidates){
         double score = 0;
-        for(Candidate candidate: candidates){
-            boolean found = false;
-            for(String answer :puzzle.getAnswers())
-            {
-                if(answer.equals(candidate)){
-                    found = true;
-                    break;
-                }
-            }
-            if(found){
-                score += candidate.getScore();
-            }
-            else{
-                score -= candidate.getScore();
-            }
-        }
-        return score;
+
+        for(Candidate candidate : candidates)
+            score += answers.get(clueId).equals(candidate.getWord()) ? 1 : 0;
+
+        scores.put(module, score);
+
     }
 
-    public Map<String, Domain> getDomains() {
-        Map<String, Domain> domains = new HashMap<>();
+    public void normalizeScores() {
 
-        for (Clue clue : puzzle.getClues().getA())
-            useModules(clue, domains, true);
-
-        for (Clue clue : puzzle.getClues().getD())
-            useModules(clue, domains, false);
-
-        return domains;
+        for (String module : scores.keySet())
+            scores.put(module, 100.0 * scores.get(module) / answers.size());
     }
 
-    void useModules(Clue clue, Map<String, Domain> domains, boolean isAcross) {
-        for (RestModule module : RestModule.values()) {
-            System.out.println(clue.getValue());
-            System.out.println(clue.getClueStart() + ", " + clue.getClueEnd());
-            List<Candidate> candidates = restClient.useModule(module, clue.getValue(), clue.getAnswerLength(isAcross));
-            scoreList.put(module.toString(),scoreList.get(module.toString())+calculateScore(candidates));
-            domains.put((isAcross ? "A" : "D") + clue.getClueNum(), new Domain(candidates));
-        }
+    public Map<String, Double> getScores() {
+
+        return scores;
     }
+
+
 }

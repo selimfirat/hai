@@ -2,6 +2,7 @@ package com.hai.gui.domain.merger.rest_client;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hai.gui.data.candidate.Candidate;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -58,18 +59,19 @@ public class RestClient
             case DATAMUSE_ANSWER_LIST:
                 candidates = getCandidates(dataMuseAnswerList(clue, length));
             break;
-            case DATAMUSE_WORD_ENP:
-                candidates = getCandidates(searchDatamuseWordenp(clue));
-            break;
             case WIKI_TITLES_SEARCH:
                 candidates = getCandidates(wikiSearch(clue, length));
+            break;
+            case SYNONYMS_ANTONYMS:
+                List<Candidate> c1 = getCandidates(findAllSynonyms(clue, length));
+                c1.addAll(getCandidates(findAllAntonyms(clue, length)));
+                candidates = c1;
             break;
         }
 
         return candidates;
     }
 
-    // dictionary methods
     public String getNLength(int n)
     {
         HttpGet getMethod = new HttpGet(Config.SERVER_URL + Config.GET_N_LENGTH_STRING + n);
@@ -77,9 +79,10 @@ public class RestClient
     }
 
     // document_analyzer methods
-    public String analyzeSearchResults(String query, int count, int length)
+    public String analyzeSearchResults(String query, int length, int count)
     {
-        String JsonString = "{\"query\":\"" + query + "\", \"count\": " + count + ", \"length\": " + length + "}";
+        String JsonString = "{\"query\":\" " + query + "\", \"length\": " + length + ", \"count\": " + count + "}";
+        System.out.println(JsonString);
         HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.ANALYZE_SEARCH_RESULT_STRING);
 
         return makePostRequest(postMethod, JsonString);
@@ -88,23 +91,15 @@ public class RestClient
     // datamuse methods
     public String dataMuseAnswerList(String ml, int wordLength)
     {
-        String JsonString = "{\"ml\":\"" + sanitizeClue(ml) + "\", \"word_length\": " + wordLength + "}";
+        String JsonString = "{\"ml\":\"" + ml + "\", \"word_length\": " + wordLength + "}";
         HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.SEARCH_DATAMUSE_ANSWER_LIST_STRING);
-
-        return makePostRequest(postMethod, JsonString);
-    }
-
-    public String searchDatamuseWordenp(String ml)
-    {
-        String JsonString = "{\"ml\":\"" + sanitizeClue(ml) + "\"}";
-        HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.SEARCH_DATAMUSE_WORDENP_STRING);
 
         return makePostRequest(postMethod, JsonString);
     }
 
     public String wikiSearch(String ml, int wordLength)
     {
-        String JsonString = "{\"ml\":\"" + sanitizeClue(ml) + "\", \"word_length\": " + wordLength + "}";
+        String JsonString = "{\"ml\":\"" + ml + "\", \"word_length\": " + wordLength + "}";
         HttpPost postMethod = new HttpPost(Config.SERVER_URL + Config.WIKI_SEARCH_STRING);
 
         return makePostRequest(postMethod, JsonString);

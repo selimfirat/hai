@@ -1,12 +1,9 @@
 package com.hai.gui.presentation.session.csp;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hai.gui.presentation.HTTPServer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.scene.Parent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Screen;

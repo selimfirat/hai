@@ -24,7 +24,7 @@
                 <children>
                     <TabPane tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
-                        <Tab text="Puzzle" >
+                        <Tab text="Original Puzzle" >
                             <content>
                                 <SplitPane fx:id="splitWordList" dividerPositions="0.65">
                                     <items>
@@ -60,6 +60,62 @@
                                                             </children>
                                                         </GridPane>
                                                         <GridPane fx:id="downGrid">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints hgrow="NEVER" />
+                                                                <ColumnConstraints hgrow="ALWAYS" />
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints />
+                                                                <RowConstraints />
+                                                            </rowConstraints>
+                                                            <children>
+                                                                <Label style="-fx-font-weight: bolder; -fx-text-fill: #a43030; -fx-padding: 0 0 0 2em;" GridPane.rowIndex="0">DOWN</Label>
+                                                            </children>
+                                                        </GridPane>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </AnchorPane>
+                                    </items>
+                                </SplitPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Solved Puzzle" >
+                            <content>
+                                <SplitPane dividerPositions="0.65">
+                                    <items>
+                                        <AnchorPane>
+                                            <children>
+                                                <BorderPane styleClass="mainWordPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <center>
+                                                        <GUIPuzzle fx:id="GUIPuzzle2">
+                                                        </GUIPuzzle>
+                                                    </center>
+                                                    <bottom>
+                                                    </bottom>
+                                                    <top>
+                                                    </top>
+                                                </BorderPane>
+                                            </children>
+                                        </AnchorPane>
+                                        <AnchorPane>
+                                            <children>
+                                                <VBox spacing="3">
+                                                    <children>
+                                                        <GridPane fx:id="acrossGrid2">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints hgrow="NEVER" />
+                                                                <ColumnConstraints hgrow="ALWAYS"  />
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints />
+                                                                <RowConstraints prefHeight="5"/>
+                                                            </rowConstraints>
+                                                            <children >
+                                                                <Label style="-fx-font-weight: bolder; -fx-text-fill: #a43030; -fx-padding: 0.5em 0 0 2em;" GridPane.rowIndex="0">ACROSS</Label>
+                                                            </children>
+                                                        </GridPane>
+                                                        <GridPane fx:id="downGrid2">
                                                             <columnConstraints>
                                                                 <ColumnConstraints hgrow="NEVER" />
                                                                 <ColumnConstraints hgrow="ALWAYS" />

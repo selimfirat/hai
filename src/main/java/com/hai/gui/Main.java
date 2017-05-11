@@ -1,5 +1,6 @@
 package com.hai.gui;
 
+import com.hai.gui.data.DB;
 import com.hai.gui.data.csp.Assignment;
 import com.hai.gui.data.csp.Constraint;
 import com.hai.gui.data.csp.Domain;
@@ -15,7 +16,6 @@ import com.hai.gui.presentation.main.MainController;
 import com.hai.gui.presentation.session.SessionController;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.sun.scenario.effect.Merge;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -60,6 +60,8 @@ public class Main extends Application {
             }
         });
 
+        DB.initConnection("jdbc:sqlserver://haibilkenthai.cwomk2hiytzy.us-east-1.rds.amazonaws.com:1433;user=bilkenthai;password=bilkenthai;database=bilkenthai");
+
         GUITransition.getInstance().getMainController().setDayCellFactory(new Callback<DatePicker, DateCell>() {
 
             public DateCell call(final DatePicker datePicker) {
@@ -91,11 +93,7 @@ public class Main extends Application {
 
                 if (record.getLevel() == MrsHai.LEVEL) {
                     final LogRecord finalRecord = record;
-                    new Thread(new Runnable() {
-                        public void run() {
-                            mrsHai.speak(finalRecord.getMessage());
-                        }
-                    }).start();
+                    new Thread(() -> mrsHai.speak(finalRecord.getMessage())).start();
                 }
             }
 
@@ -130,13 +128,15 @@ public class Main extends Application {
 
         mainController.startSession();
 
-        Merger merger = new Merger(puzzle);
-        Map<String, Domain> domains = merger.getDomains();
+        new Thread(() -> {
+            Merger merger = new Merger(puzzle, date);
+            Map<String, Domain> domains = merger.getDomains();
 
-        CSPSolver cspSolver = new CSPSolver();
+            CSPSolver cspSolver = new CSPSolver();
 
-        Assignment assignment = cspSolver.backtracingSearch(variableList, constraintList, domains);
-        System.out.println(assignment);
+            Assignment assignment = cspSolver.backtracingSearch(variableList, constraintList, domains);
+            System.out.println(assignment);
+        }).start();
 
     }
 

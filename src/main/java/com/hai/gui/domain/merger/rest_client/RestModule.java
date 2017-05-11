@@ -7,7 +7,6 @@ public enum RestModule {
     N_LENGTH,
     BING_SEARCH,
     DATAMUSE_ANSWER_LIST,
-    DATAMUSE_WORD_ENP,
+    SYNONYMS_ANTONYMS,
     WIKI_TITLES_SEARCH
-
 }

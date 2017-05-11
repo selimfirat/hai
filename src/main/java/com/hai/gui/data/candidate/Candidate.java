@@ -1,4 +1,4 @@
-package com.hai.gui.domain.merger.rest_client;
+package com.hai.gui.data.candidate;
 
 /**
  * Created by mrsfy on 30-Apr-17.

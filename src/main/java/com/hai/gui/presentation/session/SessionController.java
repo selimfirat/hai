@@ -12,6 +12,7 @@ import com.hai.gui.data.puzzle.Clue;
 import com.hai.gui.data.puzzle.CluesContainer;
 import com.hai.gui.data.puzzle.Puzzle;
 import com.hai.gui.presentation.session.csp.CSPGraph;
+import com.hai.gui.presentation.session.puzzle.GUIPuzzle;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -24,13 +25,22 @@ import java.util.List;
 public class SessionController {
 
     @FXML
-    private com.hai.gui.presentation.session.puzzle.GUIPuzzle GUIPuzzle;
+    private GUIPuzzle GUIPuzzle;
+
+    @FXML
+    private GUIPuzzle GUIPuzzle2;
 
     @FXML
     private GridPane acrossGrid;
 
     @FXML
     private GridPane downGrid;
+
+    @FXML
+    private GridPane acrossGrid2;
+
+    @FXML
+    private GridPane downGrid2;
 
     @FXML
     private CSPGraph cspGraph;
