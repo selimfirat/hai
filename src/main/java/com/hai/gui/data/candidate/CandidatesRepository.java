@@ -1,11 +1,14 @@
 package com.hai.gui.data.candidate;
 
 import com.hai.gui.data.DB;
+import com.hai.gui.data.csp.Domain;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,6 +49,28 @@ public class CandidatesRepository {
             statement.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    public void saveCombinedCandidates(String puzzleDate, Map<String, Domain> domains) {
+        for (String clueId : domains.keySet()) {
+            TreeSet<Candidate> candidates = domains.get(clueId).getCandidates();
+            try {
+                String query = "INSERT INTO candidates_puzzles (clue_id, word, normalized_score, date) VALUES (?, ?, ?, ?)";
+
+                PreparedStatement statement = DB.prepareStatement(query);
+
+                for (Candidate candidate : candidates) {
+                    statement.setString(1, clueId);
+                    statement.setString(2, candidate.getWord());
+                    statement.setDouble(3, candidate.getScore());
+                    statement.setDouble(3, candidate.getScore());
+                    statement.setString(4, puzzleDate);
+                }
+
+                statement.executeBatch();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

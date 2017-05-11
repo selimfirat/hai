@@ -22,5 +22,7 @@ public class Domain {
         });
     }
 
-
+    public TreeSet<Candidate> getCandidates() {
+        return candidates;
+    }
 }

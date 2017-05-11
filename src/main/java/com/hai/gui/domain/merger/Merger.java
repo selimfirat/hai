@@ -32,11 +32,21 @@ public class Merger {
     private MergerModuleTest mergerModuleTest;
     private String today;
 
+    private Map<String, Double> moduleWeights = new HashMap<>();
+
     public Merger(Puzzle puzzle, LocalDate date) {
         this.puzzle = puzzle;
         restClient = new RestClient();
         mergerModuleTest = new MergerModuleTest(puzzle);
         this.today = date.format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+        moduleWeights.put(RestModule.BING_SEARCH.name(), 0.15);
+        moduleWeights.put(RestModule.DATAMUSE_ANSWER_LIST.name(), 0.20);
+        moduleWeights.put(RestModule.N_LENGTH.name(), .05);
+        moduleWeights.put(RestModule.SYNONYMS_ANTONYMS.name(), 0.10);
+        moduleWeights.put(RestModule.WIKI_TITLES_SEARCH.name(), 0.15);
+        moduleWeights.put(Module.CWDB_N_LENGTH.name(), .10);
+        moduleWeights.put(Module.CWDB_SIMILARITY.name(), 0.25);
     }
 
     public Puzzle getPuzzle(){
@@ -58,6 +68,8 @@ public class Merger {
 
         mergerModuleTest.normalizeScores();
         SuccessLogRepository.getInstance().saveRecords(mergerModuleTest.getScores(), today);
+        CandidatesRepository.getInstance().saveCombinedCandidates(today, domains);
+
 
         return domains;
     }
@@ -75,10 +87,11 @@ public class Merger {
 
             candidates.forEach(candidate -> {
                 if (!res.containsKey(candidate.getWord()))
-                    res.put(candidate.getWord(), candidate.getScore());
+                    res.put(candidate.getWord(), candidate.getScore() / moduleWeights.get(module.name()));
                 else
-                    res.put(candidate.getWord(), res.get(clueId) + candidate.getScore());
+                    res.put(candidate.getWord(), res.get(clueId) + candidate.getScore()/moduleWeights.get(module.name()));
             });
+
             long stopTime = System.currentTimeMillis();
             long elapsedTime = stopTime - startTime;
             TimerLogRepository.getInstance().addRecord(clueId, module.name(), elapsedTime, today);
