@@ -5,11 +5,10 @@ import com.hai.gui.data.csp.Domain;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,10 +29,28 @@ public class CandidatesRepository {
         return _instance;
     }
 
-    public Map<String, Map<String, Double>> getFetchedDomains(String date) {
-        Map<String, Map<String, Double>> domains = new HashMap<>();
+    public List<Candidate> getFetchedCandidates(String date, String module, String clueId) {
+        List<Candidate> candidates = new ArrayList<>();
 
-        return null;
+        String fetchQ = "SELECT word, score FROM candidates_modules WHERE clue_id = ? AND date = ? AND module = ?";
+
+        PreparedStatement pFetchQ = DB.prepareStatement(fetchQ);
+        try {
+            pFetchQ.setString(1, clueId);
+            pFetchQ.setString(2, date);
+            pFetchQ.setString(3, module);
+            ResultSet res = pFetchQ.executeQuery();
+            while (res.next()) {
+                String word = res.getString("word");
+                double score = res.getDouble("score");
+
+                candidates.add(new Candidate(word, score));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return candidates;
     }
 
     public void saveCandidates(String clueNum, String puzzleDate, String moduleName, List<Candidate> candidates) {

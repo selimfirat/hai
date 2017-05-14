@@ -14,6 +14,7 @@ import com.hai.gui.domain.modules.Module;
 import com.hai.gui.domain.modules.cwdb_nlength.NLengthCWDB;
 import com.hai.gui.domain.modules.cwdb_similarity.Similarity;
 import com.hai.gui.presentation.MrsHai;
+import org.bouncycastle.math.raw.Mod;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -58,21 +59,23 @@ public class Merger {
     }
 
     public Map<String, Domain> getDomains() {
+
         Map<String, Domain> domains = new HashMap<>();
 
         LOG.log(MrsHai.LEVEL, "Now, I have started to obtain candidates for each clue from modules.");
 
 
-        for (Clue clue : puzzle.getClues().getA()) {
-            Map<String, Double> candidates = useModules(clue, true);
-            domains.put("A" + clue.getClueNum(), new Domain(candidates));
-        }
+        new Thread(() -> {
+            puzzle.getClues().getA().parallelStream().forEach(clue -> {
+                Map<String, Double> candidates = useModules(clue, true);
+                domains.put("A" + clue.getClueNum(), new Domain(candidates));
+            });
+        }).start();
 
-        for (Clue clue : puzzle.getClues().getD()){
+        puzzle.getClues().getD().parallelStream().forEach(clue -> {
             Map<String, Double> candidates = useModules(clue, false);
             domains.put("D" + clue.getClueNum(), new Domain(candidates));
-        }
-
+        });
 
         LOG.log(MrsHai.LEVEL, "I have obtained candidates from modules.");
 
@@ -93,14 +96,16 @@ public class Merger {
 
         Map<String, Double> res = new HashMap<>();
 
-        for (RestModule module : RestModule.values()) {
+        Arrays.stream(RestModule.values()).parallel().forEach(module -> {
             if (module == RestModule.BING_SEARCH)
-                continue;
+                return;
 
             System.out.println("Using " + module.name() + " module for clue of " + clueId + ".");
             long startTime = System.currentTimeMillis();
 
-            List<Candidate> candidates = restClient.useModule(module, clue.getValue(), clue.getAnswerLength(isAcross));
+            List<Candidate> candidates = new ArrayList<>(); //CandidatesRepository.getInstance().getFetchedCandidates(today, module.name(), clueId);
+            if (candidates.size() == 0)
+                candidates = restClient.useModule(module, clue.getValue(), clue.getAnswerLength(isAcross));
 
             CandidatesRepository.getInstance().saveCandidates(clueId, today, module.name(), candidates);
 
@@ -109,7 +114,7 @@ public class Merger {
                 if (!res.containsKey(candidate.getWord()))
                     res.put(candidate.getWord(), moduleWeights.get(module.name()) * candidate.getScore() / sumScores);
                 else
-                    res.put(candidate.getWord(), res.get(candidate.getWord()) + moduleWeights.get(module.name()) * candidate.getScore()  / sumScores);
+                    res.put(candidate.getWord(), res.get(candidate.getWord()) + moduleWeights.get(module.name()) * candidate.getScore() / sumScores);
             });
 
             long stopTime = System.currentTimeMillis();
@@ -117,23 +122,24 @@ public class Merger {
             TimerLogRepository.getInstance().addRecord(clueId, module.name(), elapsedTime, today);
 
             mergerModuleTest.calculateScore(module.name(), (isAcross ? "A" : "D") + clue.getClueNum(), candidates);
-        }
+        });
 
 
-        for (Module module : Module.values()) {
+        Arrays.stream(Module.values()).parallel().forEach(module -> {
             System.out.println("Using " + module.name() + " module for clue of " + clueId + ".");
             long startTime = System.currentTimeMillis();
 
-            List<Candidate> candidates = new ArrayList<>();
-
-            switch (module) {
-                case CWDB_SIMILARITY:
-                    Similarity similarity = new Similarity(clue.getValue(), clue.getAnswerLength(isAcross));
-                    candidates = new ArrayList<>(similarity.getAnswers(DB.getConnection()));
-                break;
-                case CWDB_N_LENGTH:
-                    candidates = new ArrayList<>(NLengthCWDB.getAnswers(DB.getConnection(), clue.getAnswerLength(isAcross)));
-                break;
+            List<Candidate> candidates = new ArrayList<>(); //CandidatesRepository.getInstance().getFetchedCandidates(today, module.name(), clueId);
+            if (candidates.size() == 0) {
+                switch (module) {
+                    case CWDB_SIMILARITY:
+                        Similarity similarity = new Similarity(clue.getValue(), clue.getAnswerLength(isAcross));
+                        candidates = new ArrayList<>(similarity.getAnswers(DB.getConnection()));
+                        break;
+                    case CWDB_N_LENGTH:
+                        candidates = new ArrayList<>(NLengthCWDB.getAnswers(DB.getConnection(), clue.getAnswerLength(isAcross)));
+                        break;
+                }
             }
 
             CandidatesRepository.getInstance().saveCandidates(clueId, today, module.name(), candidates);
@@ -149,7 +155,8 @@ public class Merger {
             TimerLogRepository.getInstance().addRecord(clueId, module.name(), elapsedTime, today);
 
             mergerModuleTest.calculateScore(module.name(), (isAcross ? "A" : "D") + clue.getClueNum(), candidates);
-        }
+
+        });
 
         return res;
     }

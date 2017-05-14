@@ -39,7 +39,7 @@ public class MergerModuleTest {
 
             StringBuilder answer = new StringBuilder();
 
-            for (int i = start; i < end; i++)
+            for (int i = start; i <= end; i++)
                     answer.append(answersLayout[i]);
 
             answers.put("A" + clue.getClueNum(), answer.toString());
@@ -57,6 +57,7 @@ public class MergerModuleTest {
 
             answers.put("D" + clue.getClueNum(), answer.toString());
         });
+
         System.out.println("Merger Module Test answers " + answers);
 
     }
