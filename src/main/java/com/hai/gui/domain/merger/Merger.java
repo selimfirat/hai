@@ -13,6 +13,7 @@ import com.hai.gui.domain.merger.rest_client.RestModule;
 import com.hai.gui.domain.modules.Module;
 import com.hai.gui.domain.modules.cwdb_nlength.NLengthCWDB;
 import com.hai.gui.domain.modules.cwdb_similarity.Similarity;
+import com.hai.gui.presentation.MrsHai;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,6 +21,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -27,6 +30,7 @@ import java.util.function.Consumer;
  */
 public class Merger {
 
+    private Logger LOG = Logger.getLogger(Merger.class.getName());
     private Puzzle puzzle;
     private RestClient restClient;
     private MergerModuleTest mergerModuleTest;
@@ -42,10 +46,10 @@ public class Merger {
 
         moduleWeights.put(RestModule.BING_SEARCH.name(), 0.15);
         moduleWeights.put(RestModule.DATAMUSE_ANSWER_LIST.name(), 0.20);
-        moduleWeights.put(RestModule.N_LENGTH.name(), .05);
+        moduleWeights.put(RestModule.N_LENGTH.name(), 0.05);
         moduleWeights.put(RestModule.SYNONYMS_ANTONYMS.name(), 0.10);
         moduleWeights.put(RestModule.WIKI_TITLES_SEARCH.name(), 0.15);
-        moduleWeights.put(Module.CWDB_N_LENGTH.name(), .10);
+        moduleWeights.put(Module.CWDB_N_LENGTH.name(), 0.10);
         moduleWeights.put(Module.CWDB_SIMILARITY.name(), 0.25);
     }
 
@@ -55,6 +59,9 @@ public class Merger {
 
     public Map<String, Domain> getDomains() {
         Map<String, Domain> domains = new HashMap<>();
+
+        LOG.log(MrsHai.LEVEL, "Now, I have started to obtain candidates for each clue from modules.");
+
 
         for (Clue clue : puzzle.getClues().getA()) {
             Map<String, Double> candidates = useModules(clue, true);
@@ -66,30 +73,43 @@ public class Merger {
             domains.put("D" + clue.getClueNum(), new Domain(candidates));
         }
 
-        mergerModuleTest.normalizeScores();
-        SuccessLogRepository.getInstance().saveRecords(mergerModuleTest.getScores(), today);
-        CandidatesRepository.getInstance().saveCombinedCandidates(today, domains);
 
+        LOG.log(MrsHai.LEVEL, "I have obtained candidates from modules.");
+
+        LOG.log(MrsHai.LEVEL, "I'm normalizing the scores for candidates.");
+        mergerModuleTest.normalizeScores();
+
+        LOG.log(MrsHai.LEVEL, "I'm saving test results for modules.");
+        SuccessLogRepository.getInstance().saveRecords(mergerModuleTest.getScores(), today);
+
+        LOG.log(MrsHai.LEVEL, "I'm saving normalized & combined candidates of this puzzle.");
+        CandidatesRepository.getInstance().saveCombinedCandidates(today, domains);
 
         return domains;
     }
 
     private Map<String, Double> useModules(Clue clue, boolean isAcross) {
         String clueId = (isAcross ? "A" : "D") + clue.getClueNum();
+
         Map<String, Double> res = new HashMap<>();
 
         for (RestModule module : RestModule.values()) {
+            if (module == RestModule.BING_SEARCH)
+                continue;
+
+            System.out.println("Using " + module.name() + " module for clue of " + clueId + ".");
             long startTime = System.currentTimeMillis();
 
             List<Candidate> candidates = restClient.useModule(module, clue.getValue(), clue.getAnswerLength(isAcross));
 
-            CandidatesRepository.getInstance().saveCandidates((isAcross ? "A" : "D") + clue.getClueNum(), today, module.name(), candidates);
+            CandidatesRepository.getInstance().saveCandidates(clueId, today, module.name(), candidates);
 
+            double sumScores = candidates.stream().mapToDouble(Candidate::getScore).sum();
             candidates.forEach(candidate -> {
                 if (!res.containsKey(candidate.getWord()))
-                    res.put(candidate.getWord(), candidate.getScore() / moduleWeights.get(module.name()));
+                    res.put(candidate.getWord(), moduleWeights.get(module.name()) * candidate.getScore() / sumScores);
                 else
-                    res.put(candidate.getWord(), res.get(clueId) + candidate.getScore()/moduleWeights.get(module.name()));
+                    res.put(candidate.getWord(), res.get(candidate.getWord()) + moduleWeights.get(module.name()) * candidate.getScore()  / sumScores);
             });
 
             long stopTime = System.currentTimeMillis();
@@ -101,6 +121,7 @@ public class Merger {
 
 
         for (Module module : Module.values()) {
+            System.out.println("Using " + module.name() + " module for clue of " + clueId + ".");
             long startTime = System.currentTimeMillis();
 
             List<Candidate> candidates = new ArrayList<>();
@@ -115,13 +136,13 @@ public class Merger {
                 break;
             }
 
-            CandidatesRepository.getInstance().saveCandidates((isAcross ? "A" : "D") + clue.getClueNum(), today, module.name(), candidates);
+            CandidatesRepository.getInstance().saveCandidates(clueId, today, module.name(), candidates);
 
             candidates.forEach(candidate -> {
                 if (!res.containsKey(candidate.getWord()))
                     res.put(candidate.getWord(), candidate.getScore());
                 else
-                    res.put(candidate.getWord(), res.get(clueId) + candidate.getScore());
+                    res.put(candidate.getWord(), res.get(candidate.getWord()) + candidate.getScore());
             });
             long stopTime = System.currentTimeMillis();
             long elapsedTime = stopTime - startTime;

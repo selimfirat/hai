@@ -30,6 +30,15 @@ public class TimerLogRepository {
     public void addRecord(String clueId, String title, long time, String date) {
 
         try {
+            String delQ = "DELETE FROM timer_logs WHERE date = ? AND clue_id = ? AND title = ?";
+
+            PreparedStatement pDelQ = DB.prepareStatement(delQ);
+            pDelQ.setString(1, date);
+            pDelQ.setString(2, clueId);
+            pDelQ.setString(3, title);
+            pDelQ.execute();
+
+
             String query = "INSERT INTO timer_logs (clue_id, title, time, date) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = DB.prepareStatement(query);
 

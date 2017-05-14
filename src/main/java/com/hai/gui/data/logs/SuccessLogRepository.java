@@ -32,14 +32,22 @@ public class SuccessLogRepository {
             return;
 
         try {
+
             String query = "INSERT INTO success_logs (title, date, success) VALUES (?, ?, ?)";
 
             PreparedStatement statement = DB.prepareStatement(query);
 
             for (String moduleName : scores.keySet()) {
+                String delQ = "DELETE FROM success_logs WHERE date = ? AND title = ?";
+                PreparedStatement pDelQ = DB.prepareStatement(delQ);
+                pDelQ.setString(1, date);
+                pDelQ.setString(2, moduleName);
+                pDelQ.execute();
+
                 statement.setString(1, moduleName);
                 statement.setString(2, date);
                 statement.setDouble(3, scores.get(moduleName));
+                statement.addBatch();
             }
 
             statement.executeBatch();

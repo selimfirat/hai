@@ -28,6 +28,7 @@ public class MergerModuleTest {
     public MergerModuleTest(Puzzle puzzle) {
         this.puzzle = puzzle;
         scores = new HashMap<>();
+        answers = new HashMap<>();
 
         String[] answersLayout = puzzle.getAnswers();
 
@@ -56,6 +57,7 @@ public class MergerModuleTest {
 
             answers.put("D" + clue.getClueNum(), answer.toString());
         });
+        System.out.println("Merger Module Test answers " + answers);
 
     }
 
@@ -64,10 +66,19 @@ public class MergerModuleTest {
     }
 
     public void calculateScore(String module, String clueId, List<Candidate> candidates){
-        double score = 0;
+        System.out.println("The module " + module + " has suggested " + candidates.size() + " candidates for " + clueId);
+        if (!scores.containsKey(module))
+            scores.put(module, 0.0);
+
+        double score = scores.get(module);
 
         for(Candidate candidate : candidates)
-            score += answers.get(clueId).equals(candidate.getWord()) ? 1 : 0;
+            if (answers.get(clueId).equals(candidate.getWord())) {
+                score += 1.0;
+                System.out.println("The candidates that module " + module + " suggested contains the correct fill.");
+                break;
+            }
+
 
         scores.put(module, score);
 

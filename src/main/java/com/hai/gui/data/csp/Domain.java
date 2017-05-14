@@ -16,6 +16,9 @@ public class Domain {
     // word -> score
     private TreeSet<Candidate> candidates = new TreeSet<>((o1, o2) -> (int) Math.ceil(o1.getScore() - o2.getScore()));
 
+    public Domain() {
+    }
+
     public Domain(Map<String, Double> candidates) {
         candidates.forEach((word, score) -> {
             this.candidates.add(new Candidate(word, score));

@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,6 +40,7 @@ public class RestClient
         try {
             res = gson.fromJson(json, type);
         } catch (Exception e){
+            System.out.println(json);
             System.out.println(e.getMessage());
             res = new ArrayList<>();
         }
@@ -54,7 +56,7 @@ public class RestClient
                 candidates = getCandidates(getNLength(length));
             break;
             case BING_SEARCH:
-                candidates = getCandidates(analyzeSearchResults(clue, 10, length));
+                candidates = getCandidates(analyzeSearchResults(clue, length, 10));
             break;
             case DATAMUSE_ANSWER_LIST:
                 candidates = getCandidates(dataMuseAnswerList(clue, length));
@@ -133,7 +135,6 @@ public class RestClient
 
         try {
             HttpResponse rawResponse = client.execute(postMethod);
-            System.out.println("Response Code : " + rawResponse.getStatusLine().getStatusCode());
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(rawResponse.getEntity().getContent()));
 
@@ -153,11 +154,10 @@ public class RestClient
     private String makeGetRequest(HttpGet getMethod)
     {
         getMethod.addHeader("User-Agent", Config.USER_AGENT);
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 
         try {
             HttpResponse rawResponse = client.execute(getMethod);
-            System.out.println("Response Code : " + rawResponse.getStatusLine().getStatusCode());
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(rawResponse.getEntity().getContent()));
 
@@ -172,12 +172,5 @@ public class RestClient
         }
 
         return result.toString();
-    }
-
-    private String sanitizeClue(String clue)
-    {
-        String result = clue.replace('"', '+');
-        result = result.replace(' ', '+');
-        return result;
     }
 }

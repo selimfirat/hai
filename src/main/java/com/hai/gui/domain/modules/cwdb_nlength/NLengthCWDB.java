@@ -16,7 +16,7 @@ public class NLengthCWDB {
     public static Set<Candidate> getAnswers(Connection c, int l)
     {
         Set<Candidate> set = new HashSet<Candidate>();
-        String query = " SELECT answer FROM cwdb WHERE LEN(answer) = " + l;
+        String query = "SELECT DISTINCT answer FROM cwdb WHERE LEN(answer) = " + l;
         try{
             Statement stmt = c.createStatement();
             ResultSet answerSet = stmt.executeQuery(query);

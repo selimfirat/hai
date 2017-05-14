@@ -54,7 +54,7 @@
 
                                         </DatePicker>
                                         <Separator orientation="VERTICAL" />
-                                        <CheckBox fx:id="buttonEnableMrsHai" mnemonicParsing="false" selected="true" text="Enable Mr. Hai">
+                                        <CheckBox fx:id="buttonEnableMrsHai" mnemonicParsing="false" selected="true" text="Enable Mrs. Hai">
                                             <tooltip>
                                                 <Tooltip text="Let hai speak!" />
                                             </tooltip>

@@ -1,5 +1,6 @@
 package com.hai.gui.domain.csp;
 
+import com.hai.gui.data.candidate.Candidate;
 import com.hai.gui.data.csp.Assignment;
 import com.hai.gui.data.csp.Constraint;
 import com.hai.gui.data.csp.Domain;
@@ -54,9 +55,9 @@ public class CSPSolver {
         if (var == null)
             return assignment;
 
-        for (String candidate : var.getDomain().getCandidates().keySet()) {
-            if (isConsistent(var, candidate, assignment)) {
-                assignment.addField(var.getId(), candidate);
+        for (Candidate candidate : var.getDomain().getCandidates()) {
+            if (isConsistent(var, candidate.getWord(), assignment)) {
+                assignment.addField(var.getId(), candidate.getWord());
 
                 variables.remove(var.getId());
                 if (variables.isEmpty()) {
@@ -115,16 +116,16 @@ public class CSPSolver {
     // true iff we revise the domain of Xi
     public boolean revise(Variable f, Variable s, Constraint c) {
         boolean revised = false;
-        for (String aWord : f.getDomain().getCandidates().keySet()) {
+        for (Candidate c1: f.getDomain().getCandidates()) {
             boolean found = false;
-            for (String dWord : s.getDomain().getCandidates().keySet()) {
-                if (aWord.charAt(c.getAcroosCharAt()) == dWord.charAt(c.getDownCharAt())) {
+            for (Candidate c2: s.getDomain().getCandidates()) {
+                if (c1.getWord().charAt(c.getAcroosCharAt()) == c2.getWord().charAt(c.getDownCharAt())) {
                     found  = true;
                 }
             }
             if (!found) {
                 revised = true;
-                f.getDomain().getCandidates().remove(aWord);
+                f.getDomain().getCandidates().remove(c1);
             }
 
         }
