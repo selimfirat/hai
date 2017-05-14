@@ -132,11 +132,11 @@ public class Main extends Application {
             Merger merger = new Merger(puzzle, date);
             Map<String, Domain> domains = merger.getDomains();
 
-            /*CSPSolver cspSolver = new CSPSolver();
+            CSPSolver cspSolver = new CSPSolver();
 
-            Assignment assignment = cspSolver.backtracingSearch(variableList, constraintList, domains);
+            Assignment assignment = cspSolver.solve(cspSolver.getVariablesWithConstraintsAndDomains(variableList, constraintList, domains), new Assignment());
             System.out.println(assignment);
-            */
+
         }).start();
 
     }

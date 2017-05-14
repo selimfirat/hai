@@ -68,27 +68,25 @@ public class MergerModuleTest {
 
     public void calculateScore(String module, String clueId, List<Candidate> candidates){
         System.out.println("The module " + module + " has suggested " + candidates.size() + " candidates for " + clueId);
-        if (!scores.containsKey(module))
-            scores.put(module, 0.0);
+        scores.putIfAbsent(module, 0.0);
 
         double score = scores.get(module);
 
         for(Candidate candidate : candidates)
             if (answers.get(clueId).equals(candidate.getWord())) {
                 score += 1.0;
-                System.out.println("The candidates that module " + module + " suggested contains the correct fill.");
+                System.out.println("The candidates that module " + module + " suggested contains the correct fill for " + clueId + ".");
                 break;
             }
 
-
         scores.put(module, score);
-
     }
 
     public void normalizeScores() {
 
         for (String module : scores.keySet())
             scores.put(module, 100.0 * scores.get(module) / answers.size());
+
     }
 
     public Map<String, Double> getScores() {

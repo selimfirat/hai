@@ -15,6 +15,56 @@ import java.util.stream.Collectors;
  */
 public class CSPSolver {
 
+
+    public Assignment solve(Map<String, Variable> variables, Assignment assignment) {
+        if (variables.size() == 0)
+            return assignment;
+
+        System.out.println(assignment);
+        // Assign first unassigned
+        Variable variable = variables.values().iterator().next();
+
+        // Assign each candidate to new assignment
+        for (Candidate candidate : variable.getDomain().getCandidates()) {
+            // Create new assignment
+            Assignment newAssignment = assignment.copy();
+            newAssignment.addField(variable.getId(), candidate.getWord());
+
+            // propagate
+            Map<String, Variable> newVariables = propagateVariables(variable, variables);
+
+            if (newVariables != null) {
+                Assignment otherAssignment = solve(newVariables, newAssignment);
+                if (otherAssignment != null)
+                    return otherAssignment;
+            }
+
+        }
+
+        return null;
+    }
+
+    private Map<String, Variable> propagateVariables(Variable variable, Map<String, Variable> variables) {
+
+        Map<String, Variable> newVariables = new HashMap<>();
+        for (Variable var : variables.values())
+            if (!var.getId().equals(variable.getId()))
+                newVariables.put(var.getId(), var.copy());
+
+        Map<String, Constraint> constraints = variable.getConstraints();
+
+        for (String otherNode : constraints.keySet()) {
+            newVariables.get(otherNode).getConstraints().remove(variable.getId());
+        }
+
+        for (Variable var : newVariables.values())
+            if (var.getDomain().getCandidates().size() > 0)
+                return newVariables;
+
+        return null;
+    }
+
+
     public Assignment backtracingSearch(List<Variable> variableList, List<Constraint> constraintList, Map<String, Domain> domains) {
         return recursiveBacktracing(new Assignment(), getVariablesWithConstraintsAndDomains(variableList, constraintList, domains));
     }
@@ -32,7 +82,7 @@ public class CSPSolver {
     private boolean isConsistent(Variable var, String newCandidate, Assignment assignment) {
 
         // NOTE: this approach is different from CSP Solving Algorithms paper.
-        for (Constraint constraint : var.getConstraints()) {
+        for (Constraint constraint : var.getConstraints().values()) {
             char c1, c2;
             if (var.getId().startsWith("D")) {
                 c1 = newCandidate.charAt(constraint.getDownCharAt());
@@ -65,21 +115,20 @@ public class CSPSolver {
                 }else if (recursiveBacktracing(assignment, variables) != null) {
                     return assignment;
                 }
-
             }
-
-
         }
 
         return null;
     }
 
 
-    private Map<String, Variable> getVariablesWithConstraintsAndDomains(List<Variable> variableList, List<Constraint> constraintList, Map<String, Domain> domains) {
+    public Map<String, Variable> getVariablesWithConstraintsAndDomains(List<Variable> variableList, List<Constraint> constraintList, Map<String, Domain> domains) {
         for (Variable variable : variableList) {
             for (Constraint constraint : constraintList) {
-                if (("A" + constraint.getAcrossNum()).equals(variable.getId()) || (("D" + constraint.getDownNum()).equals(variable.getId())))
-                    variable.getConstraints().add(constraint);
+                if (("A" + constraint.getAcrossNum()).equals(variable.getId()))
+                    variable.getConstraints().put("D" + constraint.getDownNum(), constraint);
+                else if (("D" + constraint.getDownNum()).equals(variable.getId()))
+                    variable.getConstraints().put("A" + constraint.getDownNum(), constraint);
             }
 
             variable.setDomain(domains.get(variable.getId()));

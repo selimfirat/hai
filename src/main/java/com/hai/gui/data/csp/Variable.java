@@ -1,7 +1,11 @@
 package com.hai.gui.data.csp;
 
+import com.hai.gui.data.candidate.Candidate;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mrsfy on 17-Apr-17.
@@ -9,10 +13,19 @@ import java.util.List;
 public class Variable {
 
     private String id;
-    private List<Constraint> constraints = new ArrayList<>();
+    private Map<String, Constraint> constraints = new HashMap<>();
     private Domain domain = new Domain();
 
     public Variable() {
+    }
+
+    public Variable copy() {
+
+        Variable newVariable = new Variable();
+        newVariable.setDomain(domain.copy());
+        newVariable.setConstraints(new HashMap<>(constraints));
+
+        return newVariable;
     }
 
     public Variable(String id) {
@@ -35,11 +48,11 @@ public class Variable {
         this.domain = domain;
     }
 
-    public List<Constraint> getConstraints() {
-        return constraints;
+    public void setConstraints(Map<String,Constraint> constraints) {
+        this.constraints = constraints;
     }
 
-    public void setConstraints(List<Constraint> constraints) {
-        this.constraints = constraints;
+    public Map<String, Constraint> getConstraints() {
+        return constraints;
     }
 }

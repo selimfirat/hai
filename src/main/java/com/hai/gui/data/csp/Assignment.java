@@ -18,14 +18,17 @@ public class Assignment {
     public Assignment() {
     }
 
+    public Assignment copy() {
+        Assignment copy = new Assignment();
+        for (String fieldKey : fields.keySet())
+            copy.addField(fieldKey, fields.get(fieldKey));
+
+        return copy;
+    }
+
     public void addField(String id, String candidate) {
         fields.put(id, candidate);
         fieldCount++;
-    }
-
-    public void removeField(String id) {
-        fields.remove(id);
-        fieldCount--;
     }
 
     public int getFieldCount() {

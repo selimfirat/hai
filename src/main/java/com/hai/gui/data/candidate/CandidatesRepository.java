@@ -58,12 +58,12 @@ public class CandidatesRepository {
             return;
 
         try {
-            String delQ = "DELETE FROM candidates_modules WHERE clue_id = ? AND date = ?";
+            /*String delQ = "DELETE FROM candidates_modules WHERE clue_id = ? AND date = ?";
 
             PreparedStatement pDelQ = DB.prepareStatement(delQ);
             pDelQ.setString(1, clueNum);
             pDelQ.setString(2, puzzleDate);
-            pDelQ.execute();
+            pDelQ.execute();*/
 
             String query = "INSERT INTO candidates_modules (clue_id, word, score, module, date) VALUES (?, ?, ?, ?, ?)";
 
@@ -89,8 +89,12 @@ public class CandidatesRepository {
 
         try {
             PreparedStatement pDelQ = DB.prepareStatement(delQ);
-            pDelQ.setString(1, puzzleDate);
-            pDelQ.execute();
+            for (String clueId : domains.keySet()) {
+                pDelQ.setString(1, clueId);
+                pDelQ.setString(2, puzzleDate);
+                pDelQ.addBatch();
+            }
+            pDelQ.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
         }

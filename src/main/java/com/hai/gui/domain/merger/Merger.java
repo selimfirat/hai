@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,16 +66,18 @@ public class Merger {
         LOG.log(MrsHai.LEVEL, "Now, I have started to obtain candidates for each clue from modules.");
 
 
-        new Thread(() -> {
-            puzzle.getClues().getA().parallelStream().forEach(clue -> {
-                Map<String, Double> candidates = useModules(clue, true);
-                domains.put("A" + clue.getClueNum(), new Domain(candidates));
-            });
-        }).start();
+        List<Clue> allClues = puzzle.getClues().getA();
+        allClues.addAll(puzzle.getClues().getD());
 
-        puzzle.getClues().getD().parallelStream().forEach(clue -> {
-            Map<String, Double> candidates = useModules(clue, false);
-            domains.put("D" + clue.getClueNum(), new Domain(candidates));
+        puzzle.getClues().getA().parallelStream().forEach(clue -> {
+            boolean isAcross = clue.getClueEnd() - clue.getClueStart() < 5;
+            Map<String, Double> candidates = useModules(clue, isAcross);
+
+            double sumScores = candidates.values().stream().reduce((a,b)->a+b).get();
+            for (String cKey: candidates.keySet())
+                candidates.put(cKey, candidates.get(cKey) / sumScores);
+
+            domains.put((isAcross ? "A" : "D") + clue.getClueNum(), new Domain(candidates));
         });
 
         LOG.log(MrsHai.LEVEL, "I have obtained candidates from modules.");
@@ -126,6 +129,9 @@ public class Merger {
 
 
         Arrays.stream(Module.values()).parallel().forEach(module -> {
+            if (module != Module.CWDB_SIMILARITY)
+                return;
+
             System.out.println("Using " + module.name() + " module for clue of " + clueId + ".");
             long startTime = System.currentTimeMillis();
 
@@ -144,11 +150,12 @@ public class Merger {
 
             CandidatesRepository.getInstance().saveCandidates(clueId, today, module.name(), candidates);
 
+            double sumScores = candidates.stream().mapToDouble(Candidate::getScore).sum();
             candidates.forEach(candidate -> {
                 if (!res.containsKey(candidate.getWord()))
-                    res.put(candidate.getWord(), candidate.getScore());
+                    res.put(candidate.getWord(), moduleWeights.get(module.name()) * candidate.getScore() / sumScores);
                 else
-                    res.put(candidate.getWord(), res.get(candidate.getWord()) + candidate.getScore());
+                    res.put(candidate.getWord(), res.get(candidate.getWord()) + (moduleWeights.get(module.name()) * (candidate.getScore() / sumScores)));
             });
             long stopTime = System.currentTimeMillis();
             long elapsedTime = stopTime - startTime;

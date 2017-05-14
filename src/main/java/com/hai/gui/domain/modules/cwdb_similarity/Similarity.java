@@ -128,7 +128,6 @@ public class Similarity {
 
     }
 
-
     public Set<Candidate> getAnswers(Connection c)
     {
         Levenshtein k = new Levenshtein();

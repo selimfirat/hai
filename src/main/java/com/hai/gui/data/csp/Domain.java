@@ -14,9 +14,10 @@ import java.util.function.Consumer;
 public class Domain {
 
     // word -> score
-    private TreeSet<Candidate> candidates = new TreeSet<>((o1, o2) -> (int) Math.ceil(o1.getScore() - o2.getScore()));
+    private TreeSet<Candidate> candidates = new TreeSet<>((o1, o2) -> o1.getScore() - o2.getScore() >= 0 ? 1 : -1);
 
     public Domain() {
+
     }
 
     public Domain(Map<String, Double> candidates) {
@@ -27,5 +28,13 @@ public class Domain {
 
     public TreeSet<Candidate> getCandidates() {
         return candidates;
+    }
+
+
+    public Domain copy() {
+        Domain domain = new Domain();
+        domain.getCandidates().addAll(candidates);
+
+        return domain;
     }
 }
