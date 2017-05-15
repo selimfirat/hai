@@ -77,6 +77,35 @@ public class SessionController {
 
     }
 
+    public void fillSolved(Puzzle puzzle) {
+        acrossGrid2.getChildren().remove(1, acrossGrid.getChildren().size());
+        downGrid2.getChildren().remove(1, downGrid.getChildren().size());
+
+        GUIPuzzle2.fillPuzzleSolved(puzzle);
+
+        CluesContainer clues = puzzle.getClues();
+
+        int i = 2, j = 2;
+        for (Clue clue : clues.getA()) {
+
+            Label clueNum = new Label(String.valueOf(clue.getClueNum()));
+            clueNum.setStyle("-fx-font-weight: bold; -fx-padding: 0.5em 0 0 1em;");
+
+            Label clueValue = new Label(clue.getValue());
+
+
+            acrossGrid2.addRow(i++, clueNum, clueValue);
+        }
+
+        for (Clue clue : clues.getD()) {
+
+            Label clueNum = new Label(String.valueOf(clue.getClueNum()));
+            clueNum.setStyle("-fx-font-weight: bold; -fx-padding: 0.5em 0 0 1em");
+            Label clueValue = new Label(clue.getValue());
+
+            downGrid2.addRow(j++, clueNum, clueValue);
+        }
+    }
 
     public void initCSPGraph(List<Variable> variables, List<Constraint> constraints) {
         GraphData graphData = new GraphData();

@@ -119,6 +119,7 @@ public class Main extends Application {
         System.out.println(puzzle);
 
         sessionController.fillPuzzle(puzzle);
+        sessionController.fillSolved(puzzle);
 
         CSPFactory cspFactory = new CSPFactory(puzzle);
         List<Variable> variableList = cspFactory.generateVariables();

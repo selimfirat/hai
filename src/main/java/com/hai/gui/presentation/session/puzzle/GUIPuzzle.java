@@ -76,6 +76,35 @@ public class GUIPuzzle extends StackPane {
             }
         }
     }
+    public void fillPuzzleSolved(Puzzle p) {
+
+        clearFields();
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                boolean free = p.getLayout()[j*5+i] == 0;
+
+                if (free) {
+                    drawFreeCell(i, j);
+                } else {
+                    //drawCellLetter(p.getAnswers()[j*5+i].charAt(0), i, j);
+                }
+
+                // ACROSS
+                if (p.getClues().getA().size() > i) {
+                    int a = p.getClues().getA().get(i).getClueStart();
+                    drawCellNum(p.getClues().getA().get(i).getClueNum(), a % 5, a / 5);
+                }
+
+                // DOWN
+                if (p.getClues().getD().size() > j) {
+                    int b = p.getClues().getD().get(j).getClueStart();
+                    drawCellNum(p.getClues().getD().get(j).getClueNum(), b % 5, b / 5);
+                }
+
+            }
+        }
+    }
 
     private void drawFreeCell(int i, int j) {
         gc.setFill(Color.DIMGRAY);
